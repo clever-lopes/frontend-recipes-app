@@ -1,3 +1,5 @@
+// API de comidas.
+
 import mealFormat from './helpers/mealFormat';
 import formatCategory from './helpers/formatCategory';
 

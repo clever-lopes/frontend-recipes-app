@@ -1,3 +1,5 @@
+// API de bebidas.
+
 import mealFormat from './helpers/mealFormat';
 import formatCategory from './helpers/formatCategory';
 
