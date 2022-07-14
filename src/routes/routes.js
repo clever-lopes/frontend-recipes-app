@@ -1,17 +1,17 @@
 import React from 'react';
-import { useRoutes } from 'react-router-dom';
+import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
+import Login from '../pages/login/Login';
+import Foods from '../pages/home/foods/index';
+import NotFound from '../pages/notFound/index';
 
-export default function Routes() { 
+export default function Routes() {
   return (
-    useRoutes([
-      {
-        path: '/',
-        element: <Login />,
-      },
-      {
-        path: 'home',
-        element: <Home />,
-      }
-    ])
+    <Switch>
+      <Router>
+        <Route exact path="/" component={ Login } />
+        <Route exact path="/foods" component={ Foods } />
+        <Route path="*" component={ NotFound } />
+      </Router>
+    </Switch>
   );
 }
