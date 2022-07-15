@@ -1,5 +1,20 @@
 // Start
 
+// {showSearchIcon
+//   && (
+//     <button
+//       type="button"
+//       onClick={ () => setShowInoutSearch(!showInputSearch) }
+//     >
+//       <img
+//         src={ searchIcon }
+//         alt="searchIcon"
+//         data-testid="search-top-btn"
+//       />
+//     </button>
+//   )}
+//   {showInputSearch && <SearchBar />}
+
 import React, { useEffect, useContext } from 'react';
 import propTypes from 'prop-types';
 import mealAPI from '../services/mealAPI';
@@ -9,6 +24,7 @@ import { AppContext } from '../store';
 export default function SearchBar(props) {
   const { changeContext } = useContext(AppContext);
   const { page } = props;
+
   useEffect(() => {
     const firstCall = () => {
       let productList = null;
@@ -24,6 +40,7 @@ export default function SearchBar(props) {
     };
     firstCall();
   }, []);
+
   return (
     <div>
       <input type="text" data-testid="search-input" placeholder="pesquisar" />

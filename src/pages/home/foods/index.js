@@ -8,7 +8,7 @@ import Footer from '../../../components/Footer';
 export default function Foods(props) {
   const { history } = props;
   return (
-    <body>
+    <div>
       <Header
         currentPage="Foods"
         iconProfile={ profileIcon }
@@ -20,7 +20,7 @@ export default function Foods(props) {
         <h1>Hello World</h1>
       </main>
       <Footer />
-    </body>
+    </div>
   );
 }
 
