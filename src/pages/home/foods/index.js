@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Header from '../../components/Header';
-import profileIcon from '../../images/profileIcon.svg';
-import searchIcon from '../../images/searchIcon.svg';
-import Footer from '../../components/Footer';
+import Header from '../../../components/Header';
+import profileIcon from '../../../images/profileIcon.svg';
+import searchIcon from '../../../images/searchIcon.svg';
+import Footer from '../../../components/Footer';
 
 export default function Foods(props) {
   const { history } = props;
