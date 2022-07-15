@@ -15,6 +15,7 @@ export default function Foods(props) {
         iconSearch={ searchIcon }
         showSearchIcon
         history={ history }
+        isSearchBar
       />
       <main>
         <h1>Hello World</h1>
@@ -25,5 +26,5 @@ export default function Foods(props) {
 }
 
 Foods.propTypes = {
-  history: propTypes.shape.isRequired,
+  history: propTypes.shape({}).isRequired,
 };

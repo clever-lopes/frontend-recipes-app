@@ -15,26 +15,31 @@
 //   )}
 //   {showInputSearch && <SearchBar />}
 
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import propTypes from 'prop-types';
 import mealAPI from '../services/mealAPI';
 import drinkAPI from '../services/drinkAPI';
 import { AppContext } from '../store';
+import searchIcon from '../images/searchIcon.svg';
 
 export default function SearchBar(props) {
   const { changeContext } = useContext(AppContext);
-  const { page } = props;
+  const [searchState, setSearchState] = useState({ showSearch: false });
+  const { history } = props;
+  const { location: { pathname } } = history;
+
+  const { showSearch } = searchState;
 
   useEffect(() => {
-    const firstCall = () => {
+    const firstCall = async () => {
       let productList = null;
-      if (page === 'foods') {
-        productList = mealAPI.name('');
+      if (pathname === '/foods') {
+        productList = await mealAPI.name('');
       } else {
-        productList = drinkAPI.name('');
+        productList = await drinkAPI.name('');
       }
       changeContext({
-        key: productList,
+        key: 'productList',
         info: productList.slice(0, +'12'),
       });
     };
@@ -43,44 +48,66 @@ export default function SearchBar(props) {
 
   return (
     <div>
-      <input type="text" data-testid="search-input" placeholder="pesquisar" />
-      <label htmlFor="ingredientSearch">
-        Ingredient
-        <input
-          type="radio"
-          id="ingredientSearch"
-          name="searchType"
-          data-testid="ingredient-search-radio"
-        />
-      </label>
-      <label htmlFor="nameSearch">
-        Name
-        <input
-          type="radio"
-          id="nameSearch"
-          name="searchType"
-          data-testid="name-search-radio"
-        />
-      </label>
-      <label htmlFor="firstLetterSearch">
-        First Letter
-        <input
-          type="radio"
-          id="firstLetterSearch"
-          name="searchType"
-          data-testid="first-letter-search-radio"
-        />
-      </label>
-      <button
-        type="button"
-        data-testid="exec-search-btn"
-      >
-        Search
-      </button>
+      <div>
+        <button
+          type="button"
+          onClick={ () => setSearchState({ showSearch: !showSearch }) }
+        >
+          <img
+            src={ searchIcon }
+            alt="searchIcon"
+            data-testid="search-top-btn"
+          />
+        </button>
+        { showSearch && (
+          <input type="text" data-testid="search-input" placeholder="pesquisar" />
+        ) }
+      </div>
+      {showSearch && (
+        <div>
+          <label htmlFor="ingredientSearch">
+            Ingredient
+            <input
+              type="radio"
+              id="ingredientSearch"
+              name="searchType"
+              data-testid="ingredient-search-radio"
+            />
+          </label>
+          <label htmlFor="nameSearch">
+            Name
+            <input
+              type="radio"
+              id="nameSearch"
+              name="searchType"
+              data-testid="name-search-radio"
+            />
+          </label>
+          <label htmlFor="firstLetterSearch">
+            First Letter
+            <input
+              type="radio"
+              id="firstLetterSearch"
+              name="searchType"
+              data-testid="first-letter-search-radio"
+            />
+          </label>
+          <button
+            type="button"
+            data-testid="exec-search-btn"
+          >
+            Search
+          </button>
+        </div>
+      )}
     </div>
   );
 }
 
 SearchBar.propTypes = {
-  page: propTypes.string.isRequired,
+  history: propTypes.shape({
+    location: propTypes.shape({
+      pathname: propTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };

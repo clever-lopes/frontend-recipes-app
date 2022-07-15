@@ -7,22 +7,23 @@ import Footer from '../../components/Footer';
 export default function Profile(props) {
   const { history } = props;
   return (
-    <body>
+    <div>
       <Header
         showSearchIcon={ false }
         iconProfile={ profileIcon }
         currentPage="Profile"
         history={ history }
         isInProfile
+        isSearchBar={ false }
       />
       <div>
         <h2>Hello World</h2>
       </div>
       <Footer />
-    </body>
+    </div>
   );
 }
 
 Profile.propTypes = {
-  history: PropTypes.shape.isRequired,
+  history: PropTypes.shape({}).isRequired,
 };

@@ -1,11 +1,13 @@
 import propTypes from 'prop-types';
 import React from 'react';
 import profileIcon from '../images/profileIcon.svg';
+import SearchBar from './SearchBar';
 
 export default function Header(props) {
   const {
     currentPage,
     history,
+    isSearchBar,
   } = props;
 
   const { location: { pathname } } = history;
@@ -25,6 +27,7 @@ export default function Header(props) {
         />
       </button>
       <h3 data-testid="page-title">{ currentPage }</h3>
+      { isSearchBar && <SearchBar history={ history } /> }
     </header>
   );
 }
@@ -37,4 +40,5 @@ Header.propTypes = {
     }).isRequired,
     push: propTypes.func.isRequired,
   }).isRequired,
+  isSearchBar: propTypes.bool.isRequired,
 };
