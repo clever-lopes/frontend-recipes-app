@@ -1,18 +1,25 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-// import profileIcon from '../images/profileIcon.svg'; - use esses caminhos quando precisar usar os icones
-// import searchIcon from '../images/searchIcon.svg';
+import SearchBar from './SearchBar';
 
 export default function Header(props) {
-  const { currentPage, history, iconProfile, iconSearch, showSearchIcon } = props;
+  const {
+    currentPage,
+    history,
+    iconProfile,
+    iconSearch,
+    showSearchIcon,
+    isInProfile,
+  } = props;
 
   const [showInputSearch, setShowInoutSearch] = useState(false);
-  console.log(showInputSearch);
+
   return (
     <header>
       <button
         type="button"
-        onClick={ () => history.push('/profile') }
+        onClick={ !isInProfile ? () => history.push('/profile')
+          : () => history.push('/foods') }
       >
         <img
           src={ iconProfile }
@@ -34,11 +41,7 @@ export default function Header(props) {
           />
         </button>
       )}
-      {showInputSearch && <input
-        type="text"
-        data-testid="search-input"
-        onChange={ console.log('') }
-      />}
+      {showInputSearch && <SearchBar />}
     </header>
   );
 }
@@ -51,5 +54,6 @@ Header.propTypes = {
   }).isRequired,
   iconProfile: PropTypes.string.isRequired,
   iconSearch: PropTypes.string.isRequired,
+  isInProfile: PropTypes.bool.isRequired,
   showSearchIcon: PropTypes.bool.isRequired,
 };
