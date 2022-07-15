@@ -1,20 +1,11 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
-import Home from './pages/home/foods/index';
-import Login from './pages/login/Login';
-import NotFound from './pages/notFound';
-import Profile from './pages/profile/Profile';
 import AppProvider from './store';
+import Routes from './routes/routes';
 
 function App() {
   return (
     <AppProvider>
-      <Switch>
-        <Route exact path="/" component={ Login } />
-        <Route path="/foods" component={ Home } />
-        <Route path="/profile" component={ Profile } />
-        <Route path="/*" component={ NotFound } />
-      </Switch>
+      <Routes />
     </AppProvider>
   );
 }
