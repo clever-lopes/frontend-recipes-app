@@ -16,6 +16,7 @@ export default function Footer() {
       <button
         type="button"
         data-testid="food-bottom-btn"
+        // onClick={()=>  }
       >
         <img src={ mealIcon } alt="mealIcon" />
       </button>

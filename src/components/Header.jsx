@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import SearchBar from './SearchBar';
+import searchIcon from '../images/searchIcon.svg';
+import profileIcon from '../images/profileIcon.svg';
 
 export default function Header(props) {
   const {
     currentPage,
     history,
-    iconProfile,
-    iconSearch,
-    showSearchIcon,
     isInProfile,
   } = props;
 
@@ -22,7 +21,7 @@ export default function Header(props) {
           : () => history.push('/foods') }
       >
         <img
-          src={ iconProfile }
+          src={ profileIcon }
           alt="profileIcon"
           data-testid="profile-top-btn"
         />
@@ -35,7 +34,7 @@ export default function Header(props) {
           onClick={ () => setShowInoutSearch(!showInputSearch) }
         >
           <img
-            src={ iconSearch }
+            src={ searchIcon }
             alt="searchIcon"
             data-testid="search-top-btn"
           />
@@ -52,8 +51,5 @@ Header.propTypes = {
     pathname: PropTypes.string,
     push: PropTypes.func.isRequired,
   }).isRequired,
-  iconProfile: PropTypes.string.isRequired,
-  iconSearch: PropTypes.string.isRequired,
   isInProfile: PropTypes.bool.isRequired,
-  showSearchIcon: PropTypes.bool.isRequired,
 };
