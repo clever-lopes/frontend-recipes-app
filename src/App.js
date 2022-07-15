@@ -1,9 +1,12 @@
 import React from 'react';
+import AppProvider from './store';
 import Routes from './routes/routes';
 
 function App() {
   return (
-    <Routes />
+    <AppProvider>
+      <Routes />
+    </AppProvider>
   );
 }
 

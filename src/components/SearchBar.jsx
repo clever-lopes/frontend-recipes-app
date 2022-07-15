@@ -22,6 +22,7 @@ export default function SearchBar(props) {
     };
     firstCall();
   }, []);
+
   return (
     <div>
       <input type="text" data-testid="search-input" placeholder="pesquisar" />
