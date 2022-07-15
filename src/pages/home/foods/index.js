@@ -1,8 +1,6 @@
 import propTypes from 'prop-types';
 import React from 'react';
 import Header from '../../../components/Header';
-import profileIcon from '../../../images/profileIcon.svg';
-import searchIcon from '../../../images/searchIcon.svg';
 import Footer from '../../../components/Footer';
 
 export default function Foods(props) {
@@ -10,10 +8,7 @@ export default function Foods(props) {
   return (
     <div>
       <Header
-        currentPage="Foods"
-        iconProfile={ profileIcon }
-        iconSearch={ searchIcon }
-        showSearchIcon
+        currentPage="foods"
         history={ history }
         isSearchBar
       />

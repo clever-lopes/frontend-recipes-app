@@ -27,7 +27,7 @@ export default function Header(props) {
         />
       </button>
       <h3 data-testid="page-title">{ currentPage }</h3>
-      { isSearchBar && <SearchBar history={ history } /> }
+      { isSearchBar && <SearchBar history={ history } key={ currentPage } /> }
     </header>
   );
 }
