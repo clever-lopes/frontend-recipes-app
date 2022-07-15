@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 export default function Login({ history }) {
-  const [login, setLogin] = useState({email:'', password:''});
-  const {email, password} = login;
+  const [login, setLogin] = useState({ email: '', password: '' });
+  const { email, password } = login;
 
   const checkLogin = () => {
     const testEmail = /\S+@\S+\.\S+/;
@@ -21,7 +21,7 @@ export default function Login({ history }) {
   };
 
   const handleChange = ({ target: { name, value } }) => {
-    setLogin((old)=>({...old, [name]:value }) );
+    setLogin((old) => ({ ...old, [name]: value }));
   };
 
   return (
@@ -59,5 +59,7 @@ export default function Login({ history }) {
 }
 
 Login.propTypes = {
-  history: PropTypes.shape().isRequired,
+  history: PropTypes.shape(
+    PropTypes.func.isRequired,
+  ).isRequired,
 };
