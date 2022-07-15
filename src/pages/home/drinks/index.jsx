@@ -5,25 +5,24 @@ import profileIcon from '../../../images/profileIcon.svg';
 import searchIcon from '../../../images/searchIcon.svg';
 import Footer from '../../../components/Footer';
 
-export default function Foods(props) {
+export default function Drinks(props) {
   const { history } = props;
   return (
     <body>
       <Header
-        currentPage="Foods"
+        currentPage="Drinks"
         iconProfile={ profileIcon }
         iconSearch={ searchIcon }
         showSearchIcon
         history={ history }
       />
       <main>
-        <h1>Hello World</h1>
+        <h1>Drinks</h1>
       </main>
       <Footer />
     </body>
   );
 }
-
-Foods.propTypes = {
+Drinks.propTypes = {
   history: propTypes.shape.isRequired,
 };
