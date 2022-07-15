@@ -2,17 +2,17 @@ import React, { createContext, useState } from 'react';
 import propTypes from 'prop-types';
 import initialContext from './initialContext';
 
-const AppContext = createContext();
+export const AppContext = createContext();
 
 function AppProvider({ children }) {
   const [context, setContext] = useState(initialContext);
 
-  const useContext = ({ key, info }) => {
+  const changeContext = ({ key, info }) => {
     setContext({ ...context, [key]: info });
   };
 
   return (
-    <AppContext.Provider value={ { useContext, context } }>
+    <AppContext.Provider value={ { changeContext, context } }>
       { children }
     </AppContext.Provider>
   );
