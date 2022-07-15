@@ -9,8 +9,8 @@ export default function Routes() {
     <Switch>
       <Router>
         <Route exact path="/" component={ Login } />
-        <Route exact path="/foods" component={ Foods } />
-        <Route path="*" component={ NotFound } />
+        <Route path="/foods" component={ Foods } />
+        <Route path="/*" component={ NotFound } />
       </Router>
     </Switch>
   );
