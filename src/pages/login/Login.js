@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 export default function Login({ history }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [login, setLogin] = useState({email:'', password:''});
+  const {email, password} = login;
 
   const checkLogin = () => {
     const testEmail = /\S+@\S+\.\S+/;
@@ -21,13 +21,7 @@ export default function Login({ history }) {
   };
 
   const handleChange = ({ target: { name, value } }) => {
-    switch (name) {
-    case 'email-input': setEmail(value);
-      break;
-    case 'password-input': setPassword(value);
-      break;
-    default: break;
-    }
+    setLogin((old)=>({...old, [name]:value }) );
   };
 
   return (
@@ -36,7 +30,8 @@ export default function Login({ history }) {
         <input
           id="emailLogin"
           type="email"
-          name="email-input"
+          name="email"
+          value={ email }
           data-testid="email-input"
           onChange={ handleChange }
         />
@@ -45,7 +40,8 @@ export default function Login({ history }) {
         <input
           id="passwordLogin"
           type="password"
-          name="password-input"
+          name="password"
+          value={ password }
           data-testid="password-input"
           onChange={ handleChange }
         />
