@@ -1,3 +1,5 @@
+// Start
+
 import React, { useEffect, useContext } from 'react';
 import propTypes from 'prop-types';
 import mealAPI from '../services/mealAPI';
