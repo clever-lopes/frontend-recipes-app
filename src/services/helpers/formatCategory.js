@@ -1,5 +1,10 @@
 function formatName(str) {
-  return str.split('str').filter((item) => item !== 'str').join('');
+  const RANGE = 3;
+  const strFormat = str.split('');
+  if (strFormat.slice(0, RANGE).join('').includes('str')) {
+    return strFormat.slice(RANGE).join('');
+  }
+  return strFormat.join('');
 }
 
 function formatCategory(categoryList) {
