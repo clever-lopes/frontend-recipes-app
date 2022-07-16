@@ -3,9 +3,8 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 import renderWithRouter from './helpers/renderWithRouter';
-import SearchBar from '../components/SearchBar';
 
-describe('teste da pagina Home', () => {
+describe('teste do Hearder se aparece corretamente nas paginas, e se o searchbar faz pesquisa corretamente', () => {
   test('se no componente Foods aparece icones, e o respectivo nome da pagina ', () => {
     const { history } = renderWithRouter(<App />);
     userEvent.type(screen.getByTestId('email-input'), 'tryber@trybe.com');
@@ -61,7 +60,7 @@ describe('teste da pagina Home', () => {
     expect(history.location.pathname).toBe('/foods');
     expect(screen.getByRole('heading', { name: /foods/i })).toBeInTheDocument();
   });
-  test(' ', () => {
+  test('se aparece a searchBar ao clicar no botão de pesquisa', () => {
     const { history } = renderWithRouter(<App />);
     history.push('/foods');
 
@@ -72,5 +71,23 @@ describe('teste da pagina Home', () => {
     expect(screen.getByTestId('name-search-radio')).toBeInTheDocument();
     expect(screen.getByTestId('first-letter-search-radio')).toBeInTheDocument();
     expect(screen.getByTestId('exec-search-btn')).toBeInTheDocument();
+  });
+
+  test('se estiver em /foods, renderiza comidas e se estiver em /drinks renderiza bebidas,', async () => {
+    const { history } = renderWithRouter(<App />);
+    history.push('/foods');
+    setTimeout(() => {
+      expect(screen.getByText(/corba/i)).toBeInTheDocument();
+      expect(screen.getByText(/big mac/i)).toBeInTheDocument();
+    }, 2000);
+
+    userEvent.click(screen.getByRole('img', { name: /drinkicon/i }));
+    expect(
+      screen.getByRole('heading', { name: /drinks/i })
+    ).toBeInTheDocument();
+    setTimeout(() => {
+      expect(screen.getByText(/gg/i)).toBeInTheDocument();
+      expect(screen.getByText(/b-52/i)).toBeInTheDocument();
+    }, 2000);
   });
 });

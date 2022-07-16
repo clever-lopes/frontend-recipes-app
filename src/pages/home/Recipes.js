@@ -10,7 +10,7 @@ export default function Recipes(props) {
   return (
     <div>
       <Header
-        currentPage={ pathname === '/foods' ? 'Comidas' : 'Bebidas' }
+        currentPage={ pathname === '/foods' ? 'Foods' : 'Drinks' }
         history={ history }
         isSearchBar
       />
