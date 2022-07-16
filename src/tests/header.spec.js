@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 import renderWithRouter from './helpers/renderWithRouter';
@@ -73,21 +73,21 @@ describe('teste do Hearder se aparece corretamente nas paginas, e se o searchbar
     expect(screen.getByTestId('exec-search-btn')).toBeInTheDocument();
   });
 
-  test('se estiver em /foods, renderiza comidas e se estiver em /drinks renderiza bebidas,', async () => {
+  test('se estiver em /foods, renderiza comidas e se estiver em /drinks renderiza bebidas,', () => {
     const { history } = renderWithRouter(<App />);
     history.push('/foods');
-    setTimeout(() => {
+     waitFor(() => {
       expect(screen.getByText(/corba/i)).toBeInTheDocument();
       expect(screen.getByText(/big mac/i)).toBeInTheDocument();
-    }, 2000);
+    });
 
     userEvent.click(screen.getByRole('img', { name: /drinkicon/i }));
     expect(
       screen.getByRole('heading', { name: /drinks/i })
     ).toBeInTheDocument();
-    setTimeout(() => {
+    waitFor(() => {
       expect(screen.getByText(/gg/i)).toBeInTheDocument();
       expect(screen.getByText(/b-52/i)).toBeInTheDocument();
-    }, 2000);
+    });
   });
 });

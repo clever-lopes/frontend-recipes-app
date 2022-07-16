@@ -38,7 +38,6 @@ export default function SearchBar(props) {
       } else {
         productList = await drinkAPI.name('');
       }
-      console.log(productList);
       changeContext({
         key: 'productList',
         info: productList.slice(0, +'12'),
