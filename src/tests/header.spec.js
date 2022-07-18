@@ -52,8 +52,7 @@ describe('teste do Hearder se aparece corretamente nas paginas, e se o searchbar
     expect(pathname).toBe('/profile');
 
     expect(
-      screen.getByRole('heading', { name: /profile/i })
-    ).toBeInTheDocument();
+      screen.getByTestId('page-title').innerHTML).toBe('Profile');
     expect(searchBtn).not.toBeInTheDocument();
     //================================== SECOUND CLICK =========================================//
     userEvent.click(screen.getByRole('img', { name: /profileicon/i }));
@@ -82,9 +81,7 @@ describe('teste do Hearder se aparece corretamente nas paginas, e se o searchbar
     });
 
     userEvent.click(screen.getByRole('img', { name: /drinkicon/i }));
-    expect(
-      screen.getByRole('heading', { name: /drinks/i })
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('page-title').innerHTML).toBe('Drinks');
     waitFor(() => {
       expect(screen.getByText(/gg/i)).toBeInTheDocument();
       expect(screen.getByText(/b-52/i)).toBeInTheDocument();

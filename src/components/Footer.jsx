@@ -1,10 +1,10 @@
 import React from 'react';
-import propTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import drinkIcon from '../images/drinkIcon.svg';
 import mealIcon from '../images/mealIcon.svg';
 
-export default function Footer(props) {
-  const { history } = props;
+export default function Footer() {
+  const history = useHistory();
   return (
     <footer
       data-testid="footer"
@@ -26,9 +26,3 @@ export default function Footer(props) {
     </footer>
   );
 }
-
-Footer.propTypes = {
-  history: propTypes.shape({
-    push: propTypes.func.isRequired,
-  }).isRequired,
-};
