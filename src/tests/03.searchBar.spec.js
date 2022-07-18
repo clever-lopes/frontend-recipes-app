@@ -5,6 +5,8 @@ import App from '../App';
 import renderWithRouter from './helpers/renderWithRouter';
 import MEAL_BY_NAME from './mocks/MealByNome';
 import MEAL_BY_LETTER from './mocks/mealByLetter';
+import MEAL_BY_IGREDIENTE from './mocks/mealByIgrediente';
+
 describe('teste do componente barra de pesquisa', () => {
     test('se contém todos os elementos necessarios para a pesquisa',()=>{
         const { history } =  renderWithRouter(<App />);
@@ -97,5 +99,76 @@ describe('teste do componente barra de pesquisa', () => {
         userEvent.click(searchbtn);
         
         expect(window.alert).toBeCalled();
+    });
+
+    test('Se o radio selecionado for Igredientes, a busca na API é feita corretamente pelo igrediente', async()=>{
+    
+        const endpoint = 'https://www.themealdb.com/api/json/v1/1/filter.php?i=chicken';
+    
+        global.fetch = jest.fn().mockResolvedValue({
+            json: jest.fn().mockResolvedValue(MEAL_BY_IGREDIENTE)
+        });
+
+        const { history } =  renderWithRouter(<App />);
+        history.push('/foods');
+
+        const iconSearchBar = screen.getByTestId('search-top-btn');
+        userEvent.click(iconSearchBar);
+
+        const searchInput = screen.getByTestId('search-input');
+        const ingredientRadio = screen.getByTestId('ingredient-search-radio');
+        const searchbtn = screen.getByTestId('exec-search-btn');
+        
+        userEvent.type(searchInput,'chicken');
+        userEvent.click(ingredientRadio);
+        userEvent.click(searchbtn);
+        
+        await waitFor(()=> expect(global.fetch).toHaveBeenCalledWith(endpoint));
+    });
+    test('Se não encontrar nenhuma receita por nome deve-se exibir um alert', async()=>{
+    
+        global.fetch = jest.fn().mockResolvedValue({
+            json: jest.fn().mockResolvedValue({meals: null})
+        });
+
+        window.alert = jest.fn();
+        const { history } =  renderWithRouter(<App />);
+        history.push('/foods');
+
+        const iconSearchBar = screen.getByTestId('search-top-btn');
+        userEvent.click(iconSearchBar);
+
+        const searchInput = screen.getByTestId('search-input');
+        const nameRadio = screen.getByTestId('name-search-radio');
+        const searchbtn = screen.getByTestId('exec-search-btn');
+        
+        userEvent.type(searchInput,'comidainexistente');
+        userEvent.click(nameRadio);
+        userEvent.click(searchbtn);
+
+        await waitFor( ()=> expect(window.alert).toBeCalled());
+    });
+    test('Se não encontrar nenhuma receita por ingrediente deve-se exibir um alert', async()=>{
+    
+        global.fetch = jest.fn().mockResolvedValue({
+            json: jest.fn().mockResolvedValue({meals: null})
+        });
+
+        window.alert = jest.fn();
+        const { history } =  renderWithRouter(<App />);
+        history.push('/foods');
+
+        const iconSearchBar = screen.getByTestId('search-top-btn');
+        userEvent.click(iconSearchBar);
+
+        const searchInput = screen.getByTestId('search-input');
+        const ingredientRadio = screen.getByTestId('ingredient-search-radio');
+        const searchbtn = screen.getByTestId('exec-search-btn');
+        
+        userEvent.type(searchInput,'igrediente inexistente');
+        userEvent.click(ingredientRadio);
+        userEvent.click(searchbtn);
+        
+       await waitFor( ()=> expect(window.alert).toBeCalled());
     });
 });
