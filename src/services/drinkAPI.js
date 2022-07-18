@@ -60,12 +60,6 @@ async function filterByCategory(category) {
     .then((res) => formatCategory(res.drinks));
 }
 
-async function recommendationsDrinks() {
-  return fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=`)
-    .then((res) => res.json())
-    .then((res) => formatCategory(res.drinks));
-}
-
 const drinkAPI = {
   name,
   firstLetter,
@@ -76,7 +70,6 @@ const drinkAPI = {
   filterByIngredient,
   filterByAlcoholic,
   filterByCategory,
-  recommendationsDrinks,
 };
 
 export default drinkAPI;

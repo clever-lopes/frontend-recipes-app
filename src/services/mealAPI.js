@@ -57,12 +57,6 @@ async function filterByArea(area) {
     .then((res) => formatCategory(res.meals));
 }
 
-async function recommendationsMeals() {
-  return fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=')
-    .then((res) => res.json())
-    .then((res) => formatCategory(res.meals));
-}
-
 const mealAPI = {
   name,
   firstLetter,
@@ -73,7 +67,6 @@ const mealAPI = {
   getIngredient,
   filterByIngredient,
   filterByArea,
-  recommendationsMeals,
 };
 
 export default mealAPI;

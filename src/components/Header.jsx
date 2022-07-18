@@ -1,59 +1,44 @@
-import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import propTypes from 'prop-types';
+import React from 'react';
+import profileIcon from '../images/profileIcon.svg';
 import SearchBar from './SearchBar';
 
 export default function Header(props) {
   const {
     currentPage,
     history,
-    iconProfile,
-    iconSearch,
-    showSearchIcon,
-    isInProfile,
+    isSearchBar,
   } = props;
 
-  const [showInputSearch, setShowInoutSearch] = useState(false);
+  const { location: { pathname } } = history;
 
   return (
     <header>
       <button
         type="button"
-        onClick={ !isInProfile ? () => history.push('/profile')
-          : () => history.push('/foods') }
+        onClick={ pathname === '/profile'
+          ? () => history.push('/foods')
+          : () => history.push('/profile') }
       >
         <img
-          src={ iconProfile }
+          src={ profileIcon }
           alt="profileIcon"
           data-testid="profile-top-btn"
         />
       </button>
       <h3 data-testid="page-title">{ currentPage }</h3>
-      {showSearchIcon
-      && (
-        <button
-          type="button"
-          onClick={ () => setShowInoutSearch(!showInputSearch) }
-        >
-          <img
-            src={ iconSearch }
-            alt="searchIcon"
-            data-testid="search-top-btn"
-          />
-        </button>
-      )}
-      {showInputSearch && <SearchBar />}
+      { isSearchBar && <SearchBar history={ history } key={ currentPage } /> }
     </header>
   );
 }
 
 Header.propTypes = {
-  currentPage: PropTypes.string.isRequired,
-  history: PropTypes.shape({
-    pathname: PropTypes.string,
-    push: PropTypes.func.isRequired,
+  currentPage: propTypes.string.isRequired,
+  history: propTypes.shape({
+    location: propTypes.shape({
+      pathname: propTypes.string.isRequired,
+    }).isRequired,
+    push: propTypes.func.isRequired,
   }).isRequired,
-  iconProfile: PropTypes.string.isRequired,
-  iconSearch: PropTypes.string.isRequired,
-  isInProfile: PropTypes.bool.isRequired,
-  showSearchIcon: PropTypes.bool.isRequired,
+  isSearchBar: propTypes.bool.isRequired,
 };
