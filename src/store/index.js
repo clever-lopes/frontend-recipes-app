@@ -19,7 +19,7 @@ function AppProvider({ children }) {
 }
 
 AppProvider.propTypes = {
-  children: propTypes.oneOf([
+  children: propTypes.oneOfType([
     propTypes.node,
     propTypes.arrayOf(propTypes.node),
   ]).isRequired,
