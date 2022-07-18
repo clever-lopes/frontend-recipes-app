@@ -48,6 +48,9 @@ export default function SearchBar(props) {
 
   const searchRecipe = async () => {
     const info = await readsSearch();
+    if (info.length === 0) {
+      global.alert('Sorry, we haven\'t found any recipes for these filters.');
+    }
     const pathFunc = currentPage === 'foods' ? 'Meal' : 'Drink';
     if (info.length === 1) history.push(`/${currentPage}/${info[0][`id${pathFunc}`]}`);
     changeContext({
