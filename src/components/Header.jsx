@@ -2,6 +2,7 @@ import propTypes from 'prop-types';
 import React from 'react';
 import profileIcon from '../images/profileIcon.svg';
 import SearchBar from './SearchBar';
+import CategoryBar from './CategoryBar';
 
 export default function Header(props) {
   const {
@@ -37,6 +38,7 @@ export default function Header(props) {
         key={ currentPage }
         currentPage={ currentPage }
       /> }
+      <CategoryBar />
     </header>
   );
 }
