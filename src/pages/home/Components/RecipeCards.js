@@ -8,7 +8,10 @@ export default function RecipeCards() {
     <div>
       {
         productList.map((product, index) => (
-          <div key={ `data-testid="${index}-recipe-card"` }>
+          <div
+            data-testid={ `${index}-recipe-card` }
+            key={ product.idMeal || product.idDrink }
+          >
             <img
               data-testid={ `${index}-card-img` }
               src={ product.MealThumb || product.DrinkThumb }
