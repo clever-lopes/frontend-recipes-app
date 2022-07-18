@@ -3,8 +3,8 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 import renderWithRouter from './helpers/renderWithRouter';
-import soups_mock from './mocks/nome';
-
+import MEAL_BY_NAME from './mocks/MealByNome';
+import MEAL_BY_LETTER from './mocks/mealByLetter';
 describe('teste do componente barra de pesquisa', () => {
     test('se contém todos os elementos necessarios para a pesquisa',()=>{
         const { history } =  renderWithRouter(<App />);
@@ -25,12 +25,16 @@ describe('teste do componente barra de pesquisa', () => {
         expect(searchbtn).toBeInTheDocument();
     });
     test('Se o radio selecionado for Name, a busca na API é feita corretamente pelo nome',async()=>{
+        
+        const endpoint = 'https://www.themealdb.com/api/json/v1/1/search.php?s=soup';
+        
         global.fetch = jest.fn().mockResolvedValue({
-            json: jest.fn().mockResolvedValue(soups_mock)
+            json: jest.fn().mockResolvedValue(MEAL_BY_NAME)
         });
 
         const { history } =  renderWithRouter(<App />);
         history.push('/foods');
+      
         const iconSearchBar = screen.getByTestId('search-top-btn');
         userEvent.click(iconSearchBar);
         
@@ -42,7 +46,56 @@ describe('teste do componente barra de pesquisa', () => {
         userEvent.click(nameRadio);
         userEvent.click(searchbtn);
         
-        await waitFor(()=> expect(global.fetch).toHaveBeenCalledWith('https://www.themealdb.com/api/json/v1/1/search.php?s=soup'));
-        // expect(global.fetch).toBeCalledWith('');
+        await waitFor(()=> expect(global.fetch).toHaveBeenCalledWith(endpoint));
+        
     });
-})
+    test('Se o radio selecionado for First letter, a busca na API é feita corretamente pelo primeira letra', async()=>{
+    
+        const endpoint = 'https://www.themealdb.com/api/json/v1/1/search.php?f=a';
+    
+        global.fetch = jest.fn().mockResolvedValue({
+            json: jest.fn().mockResolvedValue(MEAL_BY_LETTER)
+        });
+
+        const { history } =  renderWithRouter(<App />);
+        history.push('/foods');
+
+        const iconSearchBar = screen.getByTestId('search-top-btn');
+        userEvent.click(iconSearchBar);
+
+        const searchInput = screen.getByTestId('search-input');
+        const letterRadio = screen.getByTestId('first-letter-search-radio');
+        const searchbtn = screen.getByTestId('exec-search-btn');
+        
+        userEvent.type(searchInput,'a');
+        userEvent.click(letterRadio);
+        userEvent.click(searchbtn);
+        
+        await waitFor(()=> expect(global.fetch).toHaveBeenCalledWith(endpoint));
+    });
+
+    test('Se o radio selecionado for First letter e a busca na API for feita com mais de uma letra, deve-se exibir um alert', async()=>{
+        const endpoint = 'https://www.themealdb.com/api/json/v1/1/search.php?f=aaa';
+    
+        global.fetch = jest.fn().mockResolvedValue({
+            json: jest.fn().mockResolvedValue({meals: null})
+        });
+
+        window.alert = jest.fn();
+        const { history } =  renderWithRouter(<App />);
+        history.push('/foods');
+
+        const iconSearchBar = screen.getByTestId('search-top-btn');
+        userEvent.click(iconSearchBar);
+
+        const searchInput = screen.getByTestId('search-input');
+        const letterRadio = screen.getByTestId('first-letter-search-radio');
+        const searchbtn = screen.getByTestId('exec-search-btn');
+        
+        userEvent.type(searchInput,'aaa');
+        userEvent.click(letterRadio);
+        userEvent.click(searchbtn);
+        
+        expect(window.alert).toBeCalled();
+    });
+});

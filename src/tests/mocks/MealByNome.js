@@ -1,4 +1,4 @@
-const soups_mock = {
+const MEAL_BY_NAME = {
     "meals": [
     {
     "idMeal": "52973",
@@ -717,4 +717,4 @@ const soups_mock = {
     }
     ]
     }
-    export default soups_mock;
+    export default MEAL_BY_NAME;
