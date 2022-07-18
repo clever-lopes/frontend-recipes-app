@@ -52,7 +52,7 @@ export default function SearchBar(props) {
     if (info.length === 1) history.push(`/${currentPage}/${info[0][`id${pathFunc}`]}`);
     changeContext({
       key: 'productList',
-      info: info.length >= +'12' ? readsSearch().slice(0, +'12') : readsSearch(),
+      info: info.length >= +'12' ? info.slice(0, +'12') : info,
     });
   };
 
