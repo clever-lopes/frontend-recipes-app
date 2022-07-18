@@ -15,37 +15,27 @@ export default function SearchBar(props) {
   });
   const { searchType, searchInput, showSearch } = searchState;
   const history = useHistory();
-  const { location: { pathname } } = history;
   const { currentPage } = props;
+  const searchMap = {
+    foods: mealAPI,
+    drinks: drinkAPI,
+  };
 
   useEffect(() => {
     const firstCall = async () => {
-      let productList = null;
-      if (pathname === '/foods') {
-        productList = await mealAPI.name('');
-      } else {
-        productList = await drinkAPI.name('');
-      }
-      console.log(productList);
       changeContext({
         key: 'productList',
-        info: productList.slice(0, +'12'),
+        info: await searchMap[currentPage].name('').then((res) => res.slice(0, +'12')),
       });
     };
     firstCall();
   }, []);
 
   const handleChange = ({ target: { name, value } }) => {
-    if (value) {
-      setSearchState({ ...searchState, [name]: value });
-    }
+    setSearchState({ ...searchState, [name]: value });
   };
 
   const readsSearch = () => {
-    const searchMap = {
-      foods: mealAPI,
-      drinks: drinkAPI,
-    };
     switch (searchType) {
     case 'byIngredient':
       return searchMap[currentPage].filterByIngredient(searchInput);
@@ -57,9 +47,12 @@ export default function SearchBar(props) {
   };
 
   const searchRecipe = async () => {
+    const info = await readsSearch();
+    const pathFunc = currentPage === 'foods' ? 'Meal' : 'Drink';
+    if (info.length === 1) history.push(`/${currentPage}/${info[0][`id${pathFunc}`]}`);
     changeContext({
       key: 'productList',
-      info: await readsSearch(),
+      info: info.length >= +'12' ? readsSearch().slice(0, +'12') : readsSearch(),
     });
   };
 
@@ -80,7 +73,7 @@ export default function SearchBar(props) {
           <input
             type="text"
             data-testid="search-input"
-            placeholder="pesquisar"
+            placeholder="search"
             name="searchInput"
             value={ searchInput }
             onChange={ handleChange }
@@ -90,7 +83,6 @@ export default function SearchBar(props) {
       {showSearch && (
         <div>
           <label htmlFor="ingredientSearch">
-            Ingredient
             <input
               type="radio"
               id="ingredientSearch"
@@ -100,9 +92,9 @@ export default function SearchBar(props) {
               value="byIngredient"
               checked={ searchType === 'byIngredient' }
             />
+            Ingredient
           </label>
           <label htmlFor="nameSearch">
-            Name
             <input
               type="radio"
               id="nameSearch"
@@ -112,29 +104,30 @@ export default function SearchBar(props) {
               value="byName"
               checked={ searchType === 'byName' }
             />
+            Name
           </label>
           <label htmlFor="firstLetterSearch">
-            First Letter
             <input
               type="radio"
               id="firstLetterSearch"
               name="searchType"
               data-testid="first-letter-search-radio"
-              onChange={ (e) => {
-                if (searchInput.length <= 1) {
-                  handleChange(e);
-                } else {
-                  global.alert('Your search must have only 1 (one) character');
-                }
-              } }
+              onChange={ handleChange }
               value="byLetter"
               checked={ searchType === 'byLetter' }
             />
+            First Letter
           </label>
           <button
             type="button"
             data-testid="exec-search-btn"
-            onClick={ searchRecipe }
+            onClick={ () => {
+              if (searchInput.length > 1 && searchType === 'byLetter') {
+                global.alert('Your search must have only 1 (one) character');
+              } else {
+                searchRecipe();
+              }
+            } }
           >
             Search
           </button>

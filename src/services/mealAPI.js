@@ -46,7 +46,7 @@ async function getIngredient() {
 }
 
 async function filterByIngredient(ingredient) {
-  return fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${ingredient}`)
+  return fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`)
     .then((res) => res.json())
     .then((res) => formatCategory(res.meals));
 }

@@ -26,7 +26,7 @@ export default function Header(props) {
           data-testid="profile-top-btn"
         />
       </button>
-      <h3 data-testid="page-title">{ currentPage }</h3>
+      <h3 data-testid="page-title">{ currentPage === 'foods' ? 'Foods' : 'Drinks' }</h3>
       { isSearchBar && <SearchBar
         history={ history }
         key={ currentPage }
