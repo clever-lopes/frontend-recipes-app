@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import mealAPI from '../../services/mealAPI';
-import drinkAPI from '../../services/drinkAPI'
+import drinkAPI from '../../services/drinkAPI';
 
 export default function RecipeDetails(props) {
   const [foodObject, setFoodObject] = useState({
@@ -10,22 +10,43 @@ export default function RecipeDetails(props) {
     ingredients: [],
     Instructions: '',
   });
+  const [recomendation, setRecomendation] = useState([]);
   const { match: { params: { id } } } = props;
-  console.log(id)
+  // console.log(id);
   
   useEffect(() => {
     const firstCall = async () => {
       // if (page === 'foods') {
-      //   setFoodObject(await mealAPI.getById(id));
+      // const result = await mealAPI.getById(id);
+      // setFoodObject(result);
       // } else {
+      // const result = await drinkAPI.getById(id);
+      // setFoodObject(result);
       //}
       // console.log(drink)
       const result = await drinkAPI.getById(id);
-      console.log(result);
+      // console.log(result);
       setFoodObject(result);
     };
     firstCall();
     
+  }, []);
+
+  useEffect(() => {
+    const recomend = async () => {
+      // if (page === 'foods') {
+      //   const result = await drinkAPI.recommendationsDrinks();
+      //   setRecomendation(result);
+      // } else {
+      //   const result = await drinkAPI.recommendationsMeals();
+      //   setRecomendation(result);
+      // }
+      const result = await mealAPI.name('');
+      console.log(result);
+      setRecomendation(result);
+      console.log(recomendation);
+    };
+    recomend();
   }, []);
   
   return (
@@ -60,23 +81,22 @@ export default function RecipeDetails(props) {
          <iframe width="420" height="315" data-testid="video"
             src={ foodObject.Youtube }>
          </iframe>
-         <p data-testid="instructions"> { foodObject.Instructions }</p> */}
          {/* <RecipeCard data-testid={`${index}-recomendation-card`}/> */}
       {/* </div> */}
-       <div>
-      <img
-          width="250px"
-          src={ foodObject.DrinkThumb }
-          alt={ foodObject.Drink }
-          data-testid="recipe-photo"
-        />
-        <h3
-          data-testid="recipe-title"
-        >
-          { foodObject.Drink }
-        </h3>
-        <p data-testid="recipe-category">{ foodObject.Alcoholic }</p>
-        <ul >
+        <div>
+          <img
+            width="250px"
+            src={ foodObject.DrinkThumb }
+            alt={ foodObject.Drink }
+            data-testid="recipe-photo"
+          />
+          <h3
+            data-testid="recipe-title"
+          >
+            { foodObject.Drink }
+          </h3>
+          <p data-testid="recipe-category">{ foodObject.Alcoholic }</p>
+          <ul >
             {
               foodObject.ingredients.map((item, index) => (
                 <li
@@ -87,9 +107,29 @@ export default function RecipeDetails(props) {
                 </li>
               ))
             }
-         </ul>
-         <p data-testid="instructions"> { foodObject.Instructions }</p>
-      </div> 
+          </ul>
+          <p data-testid="instructions"> { foodObject.Instructions }</p>
+          {/* <RecipeCard data-testid={`${index}-recomendation-card`}/> */}
+          { recomendation.map((item, index) => (
+            <div key={index} data-testid={`${index}-recomendation-card`}>
+              <img
+                src={ item.MealThumb }
+                alt={ item.Meal }
+              />
+              <p>{ item.Category }</p>
+              <h5>{ item.Meal }</h5>
+            </div>
+            )
+          )}
+      </div>
+      <div>
+        <button
+          type="button"
+          data-testid="start-recipe-btn"
+        >
+          Start Recipe
+        </button>
+      </div>
     </div>  
   );
 }
