@@ -5,15 +5,17 @@ import mealAPI from '../services/mealAPI';
 import drinkAPI from '../services/drinkAPI';
 import { AppContext } from '../store';
 import searchIcon from '../images/searchIcon.svg';
+import CategoryBar from './CategoryBar';
 
 export default function SearchBar(props) {
   const { changeContext } = useContext(AppContext);
   const [searchState, setSearchState] = useState({
     showSearch: false,
-    searchType: '',
+    searchType: 'byName',
     searchInput: '',
+    filter: '',
   });
-  const { searchType, searchInput, showSearch } = searchState;
+  const { searchType, searchInput, showSearch, filter } = searchState;
   const history = useHistory();
   const { currentPage } = props;
   const searchMap = {
@@ -57,6 +59,10 @@ export default function SearchBar(props) {
       key: 'productList',
       info: info.length >= +'12' ? info.slice(0, +'12') : info,
     });
+  };
+
+  const setFilter = (selectedFilter) => {
+    setSearchState({ ...searchState, filter: selectedFilter });
   };
 
   return (
@@ -125,6 +131,7 @@ export default function SearchBar(props) {
             type="button"
             data-testid="exec-search-btn"
             onClick={ () => {
+              setFilter('');
               if (searchInput.length > 1 && searchType === 'byLetter') {
                 global.alert('Your search must have only 1 (one) character');
               } else {
@@ -136,6 +143,13 @@ export default function SearchBar(props) {
           </button>
         </div>
       )}
+      <div>
+        <CategoryBar
+          currentPage={ currentPage }
+          setFilter={ setFilter }
+          filter={ filter }
+        />
+      </div>
     </div>
   );
 }
