@@ -1,33 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import RecipesCard from './RecipesCard';
-import mealAPI from '../../services/mealAPI'
+import React from 'react';
+import propTypes from 'prop-types';
+import Header from '../../../components/Header';
+import Footer from '../../../components/Footer';
+// import RecipeCards from './components/RecipesCards';
 
-export default function Recipes() {
-  const [data, setData] = useState([]);
-  const [food, setFood] = useState([]);
-  // const [condicional, setCondicional] = useState(false);
-
-  useEffect(() => {
-    const getData = async () => {
-      setData(await mealAPI.name(''))
-    }
-    getData();
-  }, [mealAPI, setData]);
-
-  useEffect(() => {
-    const filterFood = () => {
-      const result = data.filter((element, index) => index < 12);
-      result.forEach((element) => setFood(food.push({ name: element.Meal, image: element.MealThumb })));
-    } 
-    filterFood();
-    console.log(food);
-  }, [data, setFood]);
-  
-  
-  // foodType={ data } 
-
+export default function Recipes(props) {
+  const { history } = props;
+  const { location: { pathname } } = history;
   return (
-    // <div><p>Olá mundo</p></div>
-    <RecipesCard foodType={ food } />
+    <div>
+      <Header
+        currentPage={ pathname === '/foods' ? 'foods' : 'drinks' }
+        history={ history }
+        isSearchBar
+      />
+      {/* <RecipeCards /> */}
+      <Footer
+        history={ history }
+      />
+    </div>
   );
 }
+
+Recipes.propTypes = {
+  history: propTypes.shape({
+    location: propTypes.shape({
+      pathname: propTypes.string.isRequired,
+    }).isRequired,
+    push: propTypes.func.isRequired,
+  }).isRequired,
+};

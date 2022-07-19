@@ -28,9 +28,9 @@ async function randomOne() {
 }
 
 async function getCategories() {
-  return fetch('https://www.themealdb.com/api/json/v1/1/categories.php')
+  return fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list')
     .then((res) => res.json())
-    .then((res) => formatCategory(res.categories));
+    .then((res) => formatCategory(res.meals));
 }
 
 async function getAreas() {
@@ -39,14 +39,8 @@ async function getAreas() {
     .then((res) => formatCategory(res.meals));
 }
 
-async function getIngredient() {
-  return fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list')
-    .then((res) => res.json())
-    .then((res) => formatCategory(res.meals));
-}
-
 async function filterByIngredient(ingredient) {
-  return fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${ingredient}`)
+  return fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`)
     .then((res) => res.json())
     .then((res) => formatCategory(res.meals));
 }
@@ -57,6 +51,12 @@ async function filterByArea(area) {
     .then((res) => formatCategory(res.meals));
 }
 
+async function filterByCategory(category) {
+  return fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`)
+    .then((res) => res.json())
+    .then((res) => mealFormat(res.meals));
+}
+
 const mealAPI = {
   name,
   firstLetter,
@@ -64,9 +64,9 @@ const mealAPI = {
   randomOne,
   getCategories,
   getAreas,
-  getIngredient,
   filterByIngredient,
   filterByArea,
+  filterByCategory,
 };
 
 export default mealAPI;

@@ -1,0 +1,36 @@
+.recipe-cards-container {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  margin-bottom: 100px;
+  width: 100%;
+}
+
+.recipe-card {
+  align-items: center;
+  display: flex;
+  height: 200px;
+  justify-content: center;
+  width: 100%;
+}
+
+.recipe-card-img {
+  max-height: 200px;
+  width: 30%;
+}
+
+.recipe-card-text {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.recipe-card-extra {
+  align-items: center;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
