@@ -10,8 +10,10 @@ export default function Routes() {
     <Switch>
       <Router>
         <Route exact path="/" component={ Login } />
-        <Route path="/foods" component={ Recipes } />
-        <Route path="/recipe-details/:id" component={ RecipeDetails } />
+        {/* <Route path="/foods" component={ Recipes } />
+        <Route path="/drinks" component={ Recipes } /> */}
+        <Route exact path="/foods/:id" component={ RecipeDetails } />
+        <Route exact path="/drinks/:id" component={ RecipeDetails } />
         <Route path="/*" component={ NotFound } />
       </Router>
     </Switch>

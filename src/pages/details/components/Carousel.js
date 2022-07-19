@@ -41,11 +41,11 @@ export default function Carousel({ recommendation }) {
               <img
                 width="100%"
                 height="200px"
-                src={ item.MealThumb }
-                alt={ item.Meal }
+                src={ item.MealThumb || item.DrinkThumb }
+                alt={ item.Meal || item.Drink }
               />
               <p>{ item.Category }</p>
-              <h5>{ item.Meal }</h5>
+              <h5>{ item.Meal || item.Drink }</h5>
             </div>
           ))}
         </div>
