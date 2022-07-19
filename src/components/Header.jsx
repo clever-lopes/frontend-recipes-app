@@ -11,6 +11,11 @@ export default function Header(props) {
   } = props;
 
   const { location: { pathname } } = history;
+  const createTitle = (title) => {
+    const split = title.toLowerCase().split('');
+    split[0] = split[0].toUpperCase();
+    return split;
+  };
 
   return (
     <header>
@@ -26,8 +31,12 @@ export default function Header(props) {
           data-testid="profile-top-btn"
         />
       </button>
-      <h3 data-testid="page-title">{ currentPage }</h3>
-      { isSearchBar && <SearchBar history={ history } key={ currentPage } /> }
+      <h3 data-testid="page-title">{ createTitle(currentPage) }</h3>
+      { isSearchBar && <SearchBar
+        history={ history }
+        key={ currentPage }
+        currentPage={ currentPage }
+      /> }
     </header>
   );
 }

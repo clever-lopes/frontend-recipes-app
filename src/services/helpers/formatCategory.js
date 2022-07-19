@@ -8,6 +8,7 @@ function formatName(str) {
 }
 
 function formatCategory(categoryList) {
+  if (categoryList === null) return [];
   return categoryList.map((category) => (
     Object.entries(category).reduce((acc, item) => {
       const [name, value] = item;

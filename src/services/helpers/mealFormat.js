@@ -8,6 +8,7 @@ function formatName(str) {
 }
 
 function mealFormat(mealList) {
+  if (mealList === null) return [];
   return mealList.map((meal) => {
     const ingredients = Object.entries(meal)
       .filter((item) => item[0].includes('strIngredient'))
