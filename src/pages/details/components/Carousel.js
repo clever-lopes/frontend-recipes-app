@@ -24,12 +24,13 @@ export default function Carousel({ recommendation }) {
             overflow: 'scroll',
             overflowX:'auto',
           } }
+          data-testid="recomendation-card"
         >
           { recommend.map((item, index) => (
             <div
               key={ index }
               className="carousel__slide"
-              data-testid={ `${index}-recommendation-card` }
+              data-testid={ `${index}-recomendation-card` }
               style={ {
                 minWidth: '160px',
                 padding:'8px',

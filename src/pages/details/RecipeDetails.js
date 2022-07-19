@@ -43,18 +43,25 @@ export default function RecipeDetails(props) {
       const result = await funcMap.getById(id);
       setFoodObject(result);
     };
-    firstCall();
-  }, []);
-
-  useEffect(() => {
     const recommend = async () => {
       const result = await funcMap.name('');
       // console.log(result);
       setRecommendation(result);
       // console.log(recommendation);
     };
+    firstCall();
     recommend();
   }, []);
+
+  // useEffect(() => {
+  //   const recommend = async () => {
+  //     const result = await funcMap.name('');
+  //     // console.log(result);
+  //     setRecommendation(result);
+  //     // console.log(recommendation);
+  //   };
+  //   recommend();
+  // }, []);
 
   // useEffect(() => {
   //   const doneRecipes = localStorage.getItem('doneRecipes');
@@ -68,7 +75,6 @@ export default function RecipeDetails(props) {
   //   setIsFinished(!result);
   //   if (inProgress) setRecipeState('Continue Recipe'); else setRecipeState('Start Recipe');
   // }, []);
-
 
   function onFavoriteBtnClick() { 
     const image = foodObject.MealThumb || foodObject.DrinkThumb;

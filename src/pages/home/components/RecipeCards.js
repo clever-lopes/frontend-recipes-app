@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { AppContext } from '../../../../store';
+import { AppContext } from '../../../store';
 import '../CSS/RecipeCards.css';
 
 export default function RecipeCards() {

@@ -33,8 +33,6 @@ export default function SearchBar(props) {
     firstCall();
   }, []);
 
-<<<<<<< HEAD
-=======
   const handleChange = ({ target: { name, value } }) => {
     setSearchState({ ...searchState, [name]: value });
   };
@@ -67,7 +65,6 @@ export default function SearchBar(props) {
     setSearchState({ ...searchState, filter: selectedFilter });
   };
 
->>>>>>> 53c1f0c03d2c0c689cc82df77fd337bcf9871f3a
   return (
     <div>
       <div>
