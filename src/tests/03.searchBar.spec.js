@@ -6,6 +6,8 @@ import renderWithRouter from './helpers/renderWithRouter';
 import MEAL_BY_NAME from './mocks/MealByNome';
 import MEAL_BY_LETTER from './mocks/mealByLetter';
 import MEAL_BY_IGREDIENTE from './mocks/mealByIgrediente';
+import CORBA from './mocks/corba';
+import A1_DRINK from './mocks/a1Drink';
 
 describe('teste do componente barra de pesquisa', () => {
     test('se contém todos os elementos necessarios para a pesquisa',()=>{
@@ -77,7 +79,6 @@ describe('teste do componente barra de pesquisa', () => {
     });
 
     test('Se o radio selecionado for First letter e a busca na API for feita com mais de uma letra, deve-se exibir um alert', async()=>{
-        const endpoint = 'https://www.themealdb.com/api/json/v1/1/search.php?f=aaa';
     
         global.fetch = jest.fn().mockResolvedValue({
             json: jest.fn().mockResolvedValue({meals: null})
@@ -171,4 +172,53 @@ describe('teste do componente barra de pesquisa', () => {
         
        await waitFor( ()=> expect(window.alert).toBeCalled());
     });
+    test('Se apesquisa  uma comida por nome retornar só uma receita redireciona para "/foods/{id}" ',async()=>{
+               
+        const { history } =  renderWithRouter(<App />);
+        history.push('/foods');
+        const endpoint = 'https://www.themealdb.com/api/json/v1/1/search.php?s=Corba';
+        
+        global.fetch = jest.fn().mockResolvedValue({
+            json: jest.fn().mockResolvedValue(CORBA)
+        });
+
+      
+        const iconSearchBar = screen.getByTestId('search-top-btn');
+        userEvent.click(iconSearchBar);
+        
+        const searchInput = screen.getByTestId('search-input');
+        const nameRadio = screen.getByTestId('name-search-radio');
+        const searchbtn = screen.getByTestId('exec-search-btn');
+        
+        userEvent.type(searchInput,'Corba');
+        userEvent.click(nameRadio);
+        userEvent.click(searchbtn);
+        await waitFor(()=> expect(global.fetch).toHaveBeenCalledWith(endpoint));
+        await waitFor(()=> expect(history.location.pathname).toBe('/foods/52977'));
+    })
+    test('Se apesquisa por uma bebida por nome retornar só uma receita redireciona para "/drinks/{id}" ',async()=> {
+               
+        const endpoint = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=A1';
+        
+        global.fetch = jest.fn().mockResolvedValue({
+            json: jest.fn().mockResolvedValue(A1_DRINK)
+        });
+      
+        const { history } =  renderWithRouter(<App />);
+        history.push('/drinks');
+      
+        const iconSearchBar = screen.getByTestId('search-top-btn');
+        userEvent.click(iconSearchBar);
+        
+        const searchInput = screen.getByTestId('search-input');
+        const nameRadio = screen.getByTestId('name-search-radio');
+        const searchbtn = screen.getByTestId('exec-search-btn');
+
+        userEvent.type(searchInput,'A1');
+        userEvent.click(nameRadio);
+        userEvent.click(searchbtn);
+        
+        await waitFor(()=> expect(global.fetch).toHaveBeenCalledWith(endpoint));
+        await waitFor(()=> expect(history.location.pathname).toBe('/drinks/17222'));
+    })
 });
