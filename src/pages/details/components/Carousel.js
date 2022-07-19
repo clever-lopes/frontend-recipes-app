@@ -16,15 +16,13 @@ export default function Carousel({ recommendation }) {
         <div
           className="carousel__track"
           style={ {
-            padding: '10px',
+            // padding: '10px',
             margin: 0,
             listStyle: 'none',
             display: 'flex',
-            border: '1px solid black',
-            flexDirection: 'row',
-            flexWrap: 'nowrap',
-            backgroundColor: 'orange',
-            width: '100%',
+            width: '99%',
+            overflow: 'scroll',
+            overflowX:'auto',
           } }
         >
           { recommend.map((item, index) => (
@@ -34,7 +32,7 @@ export default function Carousel({ recommendation }) {
               data-testid={ `${index}-recommendation-card` }
               style={ {
                 minWidth: '160px',
-                padding:'6px',
+                padding:'8px',
                 textAlign: 'center',
                 alignItems: 'center',
                 justifyContent: 'center',

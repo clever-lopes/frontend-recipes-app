@@ -6,6 +6,8 @@ import Carousel from './components/Carousel';
 
 export default function RecipeDetails(props) {
   const [recommendation, setRecommendation] = useState([]);
+  const [recipeState, setRecipeState] = useState('Start Recipe');
+  const [isFinished, setIsFinished] = useState(true);
   const [foodObject, setFoodObject] = useState({
     DrinkThumb: '',
     Drink: '',
@@ -15,6 +17,9 @@ export default function RecipeDetails(props) {
   });
   const { match: { params: { id } } } = props;
   // console.log(id);
+
+  // const { location: { pathname } } = useHistory();
+  // const breaking = pathname.split('/').filter((item) => item);
 
   useEffect(() => {
     const firstCall = async () => {
@@ -50,12 +55,19 @@ export default function RecipeDetails(props) {
     recommend();
   }, []);
 
+  // useEffect(() => {
+  //   const doneRecipes = localStorage.getItem('doneRecipes');
+
+  //   const result = foodObject.some((food) => food.Drink === doneRecipes);
+
+  //   setIsFinished(!result);
+  // });
+
   return (
     <div 
       style={ {
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: 'green',
         width: '100%',
       } }
     >
@@ -87,7 +99,7 @@ export default function RecipeDetails(props) {
          <iframe width="420" height="315" data-testid="video"
             src={ foodObject.Youtube }>
          </iframe>
-         {/* <Carousel /> */}
+         {/* <Carousel recommendation={ recommendation } /> */}
       {/* </div> */}
       <div>
         <img
@@ -118,12 +130,15 @@ export default function RecipeDetails(props) {
       </div>
       <Carousel recommendation={ recommendation } />
       <div>
-        <button
-          type="button"
-          data-testid="start-recipe-btn"
-        >
-          Start Recipe
-        </button>
+        {
+          isFinished && (
+            <button
+              type="button"
+              data-testid="start-recipe-btn"
+            >
+              { recipeState }
+            </button>)
+        }
       </div>
     </div>
   );
