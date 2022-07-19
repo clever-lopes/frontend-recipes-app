@@ -117,6 +117,7 @@ export default function RecipeDetails(props) {
         <p data-testid="instructions">{ foodObject.Instructions }</p>
         <div style={{
           backgroundColor: 'green',
+          padding: '10px',
         }}>
           <Carousel recommendation={ recommendation } />
         </div>
