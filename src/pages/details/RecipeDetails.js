@@ -51,9 +51,14 @@ export default function RecipeDetails(props) {
   }, []);
 
   return (
-    <div>
-      <p>Olá mundo</p>
-      {/* { console.log(foodObject) } */}
+    <div 
+      style={ {
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: 'green',
+        width: '100%',
+      } }
+    >
       {/* <div>
         <img
           src={ foodObject.MealThumb }
@@ -84,12 +89,7 @@ export default function RecipeDetails(props) {
          </iframe>
          {/* <Carousel /> */}
       {/* </div> */}
-      <div style={ {
-        display: 'flex',
-        flexDirection: 'column',
-        width: '250px',
-      } }
-      >
+      <div>
         <img
           width="250px"
           src={ foodObject.DrinkThumb }
@@ -115,13 +115,8 @@ export default function RecipeDetails(props) {
           }
         </ul>
         <p data-testid="instructions">{ foodObject.Instructions }</p>
-        <div style={{
-          backgroundColor: 'green',
-          padding: '10px',
-        }}>
-          <Carousel recommendation={ recommendation } />
-        </div>
       </div>
+      <Carousel recommendation={ recommendation } />
       <div>
         <button
           type="button"
