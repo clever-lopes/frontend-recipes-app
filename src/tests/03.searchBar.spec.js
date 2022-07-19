@@ -3,7 +3,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 import renderWithRouter from './helpers/renderWithRouter';
-import MEAL_BY_NAME from './mocks/MealByNome';
+import meals from './mocks/mealsMock';
 import MEAL_BY_LETTER from './mocks/mealByLetter';
 import MEAL_BY_IGREDIENTE from './mocks/mealByIgrediente';
 import CORBA from './mocks/corba';
@@ -33,7 +33,7 @@ describe('teste do componente barra de pesquisa', () => {
         const endpoint = 'https://www.themealdb.com/api/json/v1/1/search.php?s=soup';
         
         global.fetch = jest.fn().mockResolvedValue({
-            json: jest.fn().mockResolvedValue(MEAL_BY_NAME)
+            json: jest.fn().mockResolvedValue(meals)
         });
 
         const { history } =  renderWithRouter(<App />);
