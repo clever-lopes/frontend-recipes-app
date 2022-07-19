@@ -3,45 +3,62 @@ import PropTypes from 'prop-types';
 
 export default function Carousel({ recommendation }) {
   const [recommend, setRecommend] = useState([]);
+  const [newRecommend, setNewRecommend] = useState([]);
 
   useEffect(() => {
     const fill = () => {
-      const newResult = recommendation.filter((item, index) => index <= 5);
+      const newResult = recommendation.filter((_item, index) => index <= +'5');
       setRecommend(newResult);
+      const result = recommend.filter((_item, index) => index < 2);
+      setNewRecommend(result);
     };
     fill();
-    console.log(recommend);
-  }, []);
-  console.log(recommendation);
-  console.log(recommend);
+  }, [recommendation]);
+
+  // const handleWhell = () => {
+
+  // }
 
   return (
-    <ul style={ {
-      display: 'flex',
-      flexWrap: 'wrap',
-      listStyle: 'none',
-      padding: '0',
-      margin: '0',
-    } }
+    <div
+      className="carousel"
+      style={ {
+        position: 'relative',
+        height: '600px',
+        margin: '0px auto',
+        width: '80%',
+      } }
     >
-      { recommend.map((item, index) => (
-        <li
-          key={ index }
-          data-testid={ `${index}-recommendation-card` }
-          style={{
-            position: 'absolute', 
-          }}
+      <div className="carousel__track-container">
+        <ul
+          className="carousel__track"
+          style={ {
+            padding: 0,
+            margin: 0,
+            listStyle: 'none',
+            display: 'flex',
+          } }
         >
-          <img
-            width="100px"
-            src={ item.MealThumb }
-            alt={ item.Meal }
-          />
-          <p>{ item.Category }</p>
-          <h5>{ item.Meal }</h5>
-        </li>
-      ))}
-    </ul>
+          { newRecommend.map((item, index) => (
+            <li
+              key={ index }
+              className="carousel__slide"
+              data-testid={ `${index}-recommendation-card` }
+              // onWheel={ handleWheel }
+            >
+              <img
+                width="300px"
+                height="200px"
+                src={ item.MealThumb }
+                alt={ item.Meal }
+              />
+              <p>{ item.Category }</p>
+              <h5>{ item.Meal }</h5>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }
 
