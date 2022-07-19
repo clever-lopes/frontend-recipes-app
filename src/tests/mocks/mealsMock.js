@@ -1,4 +1,4 @@
-const MEAL_BY_NAME = {
+const meals = {
     "meals": [
     {
     "idMeal": "52973",
@@ -717,4 +717,4 @@ const MEAL_BY_NAME = {
     }
     ]
     }
-    export default MEAL_BY_NAME;
+    export default meals;
