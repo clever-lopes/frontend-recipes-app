@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import mealAPI from '../../services/mealAPI';
 import drinkAPI from '../../services/drinkAPI';
@@ -7,13 +7,14 @@ import Carousel from './components/Carousel';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
 import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import shareIcon from '../../images/shareIcon.svg';
+
 const copy = require('clipboard-copy');
 
 export default function RecipeDetails(props) {
   const [recommendation, setRecommendation] = useState([]);
-  const [recipeState, setRecipeState] = useState('Start Recipe');
+  const [recipeState] = useState('Start Recipe');
   const [heartImg, setHeartImg] = useState(whiteHeartIcon);
-  const [isFinished, setIsFinished] = useState(true);
+  const [isFinished] = useState(true);
   const [foodObject, setFoodObject] = useState({
     DrinkThumb: '',
     Drink: '',
@@ -22,10 +23,10 @@ export default function RecipeDetails(props) {
     Instructions: '',
   });
   const { match: { params: { id } } } = props;
-
-  const { location: { pathname } } = useHistory();
+  const { location: { pathname, href } } = useHistory();
   const path = pathname.split('/').filter((item) => item);
   const funcMap = path[0] === 'foods' ? mealAPI : drinkAPI;
+  const recommendMap = (path[0] !== 'foods') ? mealAPI : drinkAPI;
 
   useEffect(() => {
     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
@@ -36,7 +37,7 @@ export default function RecipeDetails(props) {
         setHeartImg(blackHeartIcon);
       }
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     const firstCall = async () => {
@@ -44,13 +45,11 @@ export default function RecipeDetails(props) {
       setFoodObject(result);
     };
     const recommend = async () => {
-      const result = await funcMap.name('');
-      // console.log(result);
+      const result = await recommendMap.name('');
       setRecommendation(result);
-      // console.log(recommendation);
     };
-    firstCall();
     recommend();
+    firstCall();
   }, []);
 
   // useEffect(() => {
@@ -76,48 +75,60 @@ export default function RecipeDetails(props) {
   //   if (inProgress) setRecipeState('Continue Recipe'); else setRecipeState('Start Recipe');
   // }, []);
 
-  function onFavoriteBtnClick() { 
+  function onFavoriteBtnClick() {
     const image = foodObject.MealThumb || foodObject.DrinkThumb;
     const name = foodObject.Meal || foodObject.Drink;
-    const alcoholicOrNot = foodObject.Alcoholic;
+    const alcoholicOrNot = foodObject.Alcoholic ? foodObject.Alcoholic : '';
     const category = foodObject.Category;
-    const nationality = foodObject.Area;
-    const type = foodObject.Tags;
+    const nationality = foodObject.Area ? foodObject.Area : '';
+    console.log(foodObject);
+    console.log({ ...foodObject, type: foodObject.Meal ? 'food' : 'drink' });
+    const ObjectWithType = { ...foodObject, type: foodObject.Meal ? 'food' : 'drink' };
+    const { type } = ObjectWithType;
 
     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
 
     if (favoriteRecipes) {
-      const favoriteRecipesObj = [ ...favoriteRecipes, { 
-        id, type, nationality, category, alcoholicOrNot, name, image 
-      }]
-      
+      const favoriteRecipesObj = [...favoriteRecipes, {
+        id,
+        type,
+        nationality,
+        category,
+        alcoholicOrNot,
+        name,
+        image,
+      }];
+
       if (heartImg === whiteHeartIcon) {
         localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipesObj));
       }
-    
+
       if (heartImg === blackHeartIcon) {
-        const newFavoriteRecipes = favoriteRecipesObj.filter((recipe) => recipe.id !== id);
+        const newFavoriteRecipes = favoriteRecipesObj
+          .filter((recipe) => recipe.id !== id);
         localStorage.setItem('favoriteRecipes', JSON.stringify(newFavoriteRecipes));
       }
     } else {
-
-      const favoriteRecipesObj = [{ 
-        id, type, nationality, category, alcoholicOrNot, name, image 
-      }]
+      const favoriteRecipesObj = [{
+        id, type, nationality, category, alcoholicOrNot, name, image,
+      }];
 
       localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipesObj));
     }
-    
-    heartImg === whiteHeartIcon ? setHeartImg(blackHeartIcon) : setHeartImg(whiteHeartIcon);    
-  };
+    setHeartImg(heartImg === whiteHeartIcon ? blackHeartIcon : whiteHeartIcon);
+  }
 
   function onShareBtnClick() {
-    copy(`${pathname}`);
-    window.alert('Link copied!');
+    console.log(href);
+    copy(href);
+    // navigator.clipboard.writeText(location.href);
+    console.log(navigator.clipboard);
+    // copy(`localhost:3000${pathname}`);
+    global.alert('Link copied!');
   }
 
   return (
-    <div 
+    <div
       style={ {
         display: 'flex',
         flexDirection: 'column',
@@ -138,27 +149,36 @@ export default function RecipeDetails(props) {
         </h3>
         <button
           type="button"
-          data-testid="favorite-btn"
-          style = {{
+          // data-testid="favorite-btn"
+          style={ {
             border: 'none',
             background: 'transparent',
-          }}
-          onClick= { onFavoriteBtnClick }
+          } }
+          onClick={ onFavoriteBtnClick }
         >
-          <img src={ heartImg } alt="favorite image" width="17px" />
+          <img
+            data-testid="favorite-btn"
+            src={ heartImg }
+            alt="favorite"
+            width="17px"
+          />
         </button>
         <button
           type="button"
-          data-testid="share-btn"
-          style = {{
+          // data-testid="share-btn"
+          style={ {
             border: 'none',
             background: 'transparent',
-          }}
-          onClick= { onShareBtnClick }
+          } }
+          onClick={ onShareBtnClick }
         >
-          <img src={ shareIcon } alt="share image" width="17px" />
+          <img data-testid="share-btn" src={ shareIcon } alt="share" width="17px" />
         </button>
-        <p data-testid="recipe-category">{ foodObject.Alcoholic || foodObject.Category }</p>
+        <p
+          data-testid="recipe-category"
+        >
+          { foodObject.Alcoholic || foodObject.Category }
+        </p>
         <ul>
           {
             foodObject.ingredients.map((item, index) => (
@@ -173,9 +193,13 @@ export default function RecipeDetails(props) {
         </ul>
         <p data-testid="instructions">{ foodObject.Instructions }</p>
         {
-          path[0] === 'foods' && <iframe width="420" height="315" data-testid="video"
-            src={ foodObject.Youtube }>
-         </iframe>
+          path[0] === 'foods' && <iframe
+            title={ `${foodObject.Meal || foodObject.Drink}-video` }
+            width="420"
+            height="315"
+            data-testid="video"
+            src={ foodObject.Youtube }
+          />
         }
       </div>
       <Carousel recommendation={ recommendation } />
@@ -185,6 +209,10 @@ export default function RecipeDetails(props) {
             <button
               type="button"
               data-testid="start-recipe-btn"
+              style={ {
+                position: 'fixed',
+                bottom: '0',
+              } }
             >
               { recipeState }
             </button>)

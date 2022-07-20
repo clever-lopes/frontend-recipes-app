@@ -23,8 +23,9 @@ export default function Carousel({ recommendation }) {
             width: '99%',
             overflow: 'scroll',
             overflowX:'auto',
+            overflowY: 'hidden',
           } }
-          data-testid="recomendation-card"
+          // data-testid="recomendation-card"
         >
           { recommend.map((item, index) => (
             <div
@@ -46,7 +47,7 @@ export default function Carousel({ recommendation }) {
                 alt={ item.Meal || item.Drink }
               />
               <p>{ item.Category }</p>
-              <h5>{ item.Meal || item.Drink }</h5>
+              <h5 data-testid={`${index}-recomendation-title`}>{ item.Meal || item.Drink }</h5>
             </div>
           ))}
         </div>
