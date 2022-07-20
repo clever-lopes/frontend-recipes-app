@@ -22,10 +22,10 @@ export default function RecipeDetails(props) {
     Instructions: '',
   });
   const { match: { params: { id } } } = props;
-
   const { location: { pathname } } = useHistory();
   const path = pathname.split('/').filter((item) => item);
   const funcMap = path[0] === 'foods' ? mealAPI : drinkAPI;
+  const recommendMap = (path[0] !== 'foods') ? mealAPI : drinkAPI;
 
   useEffect(() => {
     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
@@ -43,18 +43,23 @@ export default function RecipeDetails(props) {
       const result = await funcMap.getById(id);
       setFoodObject(result);
     };
+    const recommend = async () => {
+      const result = await recommendMap.name('');
+      setRecommendation(result);
+    };
+    recommend();
     firstCall();
   }, []);
 
-  useEffect(() => {
-    const recommend = async () => {
-      const result = await funcMap.name('');
-      // console.log(result);
-      setRecommendation(result);
-      // console.log(recommendation);
-    };
-    recommend();
-  }, []);
+  // useEffect(() => {
+  //   const recommend = async () => {
+  //     const result = await funcMap.name('');
+  //     // console.log(result);
+  //     setRecommendation(result);
+  //     // console.log(recommendation);
+  //   };
+  //   recommend();
+  // }, []);
 
   // useEffect(() => {
   //   const doneRecipes = localStorage.getItem('doneRecipes');
@@ -69,20 +74,28 @@ export default function RecipeDetails(props) {
   //   if (inProgress) setRecipeState('Continue Recipe'); else setRecipeState('Start Recipe');
   // }, []);
 
-
   function onFavoriteBtnClick() { 
     const image = foodObject.MealThumb || foodObject.DrinkThumb;
     const name = foodObject.Meal || foodObject.Drink;
-    const alcoholicOrNot = foodObject.Alcoholic;
+    const alcoholicOrNot = foodObject.Alcoholic ? foodObject.Alcoholic : '';
     const category = foodObject.Category;
-    const nationality = foodObject.Area;
-    const type = foodObject.Tags;
+    const nationality = foodObject.Area ? foodObject.Area : '';
+    console.log(foodObject)
+    console.log({...foodObject, type: foodObject.Meal ? 'food' : 'drink'});
+    const ObjectWithType = {...foodObject, type: foodObject.Meal ? 'food' : 'drink'};
+    const type = ObjectWithType.type;
 
     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
 
     if (favoriteRecipes) {
       const favoriteRecipesObj = [ ...favoriteRecipes, { 
-        id, type, nationality, category, alcoholicOrNot, name, image 
+        id: id,
+        type: type,
+        nationality: nationality,
+        category: category,
+        alcoholicOrNot: alcoholicOrNot,
+        name: name,
+        image: image,
       }]
       
       if (heartImg === whiteHeartIcon) {
@@ -106,8 +119,12 @@ export default function RecipeDetails(props) {
   };
 
   function onShareBtnClick() {
-    copy(`${pathname}`);
-    window.alert('Link copied!');
+    console.log(location.href)
+    copy(location.href);
+    // navigator.clipboard.writeText(location.href);
+    console.log(navigator.clipboard)
+    // copy(`localhost:3000${pathname}`);
+    global.alert('Link copied!');
   }
 
   return (
@@ -132,25 +149,25 @@ export default function RecipeDetails(props) {
         </h3>
         <button
           type="button"
-          data-testid="favorite-btn"
+          // data-testid="favorite-btn"
           style = {{
             border: 'none',
             background: 'transparent',
           }}
           onClick= { onFavoriteBtnClick }
         >
-          <img src={ heartImg } alt="favorite image" width="17px" />
+          <img data-testid="favorite-btn" src={ heartImg } alt="favorite image" width="17px" />
         </button>
         <button
           type="button"
-          data-testid="share-btn"
+          // data-testid="share-btn"
           style = {{
             border: 'none',
             background: 'transparent',
           }}
           onClick= { onShareBtnClick }
         >
-          <img src={ shareIcon } alt="share image" width="17px" />
+          <img data-testid="share-btn" src={ shareIcon } alt="share image" width="17px" />
         </button>
         <p data-testid="recipe-category">{ foodObject.Alcoholic || foodObject.Category }</p>
         <ul>
@@ -179,6 +196,10 @@ export default function RecipeDetails(props) {
             <button
               type="button"
               data-testid="start-recipe-btn"
+              style = {{
+                position: 'fixed',
+                bottom: '0',
+              }}
             >
               { recipeState }
             </button>)
