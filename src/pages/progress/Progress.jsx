@@ -94,13 +94,13 @@ export default function Progress() {
   };
 
   const timerID = null;
-  const shareHandle = async () => {
-    const treatedHREF = window.location.href.split('/in-progress')[0];
-    copy(treatedHREF);
-    setProgressState({ ...progressState, popUpCopy: true });
-    return setTimeout();
-  };
-  shareHandle();
+  // const shareHandle = async () => {
+  //   const treatedHREF = window.location.href.split('/in-progress')[0];
+  //   copy(treatedHREF);
+  //   setProgressState({ ...progressState, popUpCopy: true });
+  //   return setTimeout();
+  // };
+  // shareHandle();
 
   if (prodInfo === 'notFound') {
     return <NotFound />;
