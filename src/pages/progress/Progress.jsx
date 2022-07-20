@@ -11,9 +11,20 @@ export default function Progress() {
   const params = pathname.split('/').filter((item) => item);
   const [page, id] = params;
   const funcMap = page === 'foods' ? mealAPI : drinkAPI;
+  const type = page === 'foods' ? 'meals' : 'cocktails';
+  const getProgress = () => {
+    if (localStorage.inProgressRecipes) {
+      const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
+      if (inProgress[type][id]) {
+        return inProgress[type][id];
+      }
+      return [];
+    }
+    return [];
+  };
   const [progressState, setProgressState] = useState({
     prodInfo: {},
-    checkList: [],
+    checkList: getProgress(),
   });
   const { prodInfo, checkList } = progressState;
 
@@ -32,38 +43,34 @@ export default function Progress() {
 
   const addItem = (item) => {
     let progress;
-    if (localStorage.progressRecipes) {
-      progress = JSON.parse(localStorage.getItem('progressRecipes'));
-      if (progress.some((position) => position.id === id)) {
-        progress = progress.map((position) => {
-          if (position.id === id) {
-            return {
-              id,
-              progress: [...position.progress, item],
-            };
-          }
-          return position;
-        });
+    if (localStorage.inProgressRecipes) {
+      progress = JSON.parse(localStorage.getItem('inProgressRecipes'));
+      if (progress[type][id]) {
+        progress = {
+          ...progress,
+          [type]: { ...progress[type], [id]: [...progress[type][id], item] },
+        };
       } else {
-        progress = [...progress, {
-          id,
-          progress: [item],
-        }];
+        progress = { ...progress, [type]: { [id]: [item] } };
       }
-      localStorage.setItem('progressRecipes', JSON.stringify(progress));
     } else {
-      progress = [
-        {
-          id,
-          progress: [item],
-        },
-      ];
-      localStorage.setItem('progressRecipes', JSON.stringify(progress));
+      progress = { [type]: { [id]: [item] } };
     }
+    localStorage.setItem('inProgressRecipes', JSON.stringify(progress));
+  };
+
+  const removeItem = (item) => {
+    const progress = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    const filtered = progress[type][id].filter((ingredient) => ingredient !== item);
+    const info = JSON
+      .stringify({ ...progress, [type]: { ...progress[type], [id]: filtered } });
+    localStorage
+      .setItem('inProgressRecipes', info);
   };
 
   const checkHandle = ({ target: { value } }) => {
     if (checkList.includes(value)) {
+      removeItem(value);
       setProgressState({
         ...progressState,
         checkList: checkList.filter((item) => item !== value),
@@ -143,6 +150,7 @@ export default function Progress() {
                       value={ item.ingredient }
                       onChange={ checkHandle }
                       id={ `${i}-ingredient-step-checkbox` }
+                      checked={ checked }
                     />
                     <span
                       className={ `${checked ? 'checkedIngredient' : ''}` }
