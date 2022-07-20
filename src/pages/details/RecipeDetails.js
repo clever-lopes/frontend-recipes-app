@@ -77,16 +77,25 @@ export default function RecipeDetails(props) {
   function onFavoriteBtnClick() { 
     const image = foodObject.MealThumb || foodObject.DrinkThumb;
     const name = foodObject.Meal || foodObject.Drink;
-    const alcoholicOrNot = foodObject.Alcoholic;
+    const alcoholicOrNot = foodObject.Alcoholic ? foodObject.Alcoholic : '';
     const category = foodObject.Category;
-    const nationality = foodObject.Area;
-    const type = foodObject.Tags;
+    const nationality = foodObject.Area ? foodObject.Area : '';
+    console.log(foodObject)
+    console.log({...foodObject, type: foodObject.Meal ? 'food' : 'drink'});
+    const ObjectWithType = {...foodObject, type: foodObject.Meal ? 'food' : 'drink'};
+    const type = ObjectWithType.type;
 
     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
 
     if (favoriteRecipes) {
       const favoriteRecipesObj = [ ...favoriteRecipes, { 
-        id, type, nationality, category, alcoholicOrNot, name, image 
+        id: id,
+        type: type,
+        nationality: nationality,
+        category: category,
+        alcoholicOrNot: alcoholicOrNot,
+        name: name,
+        image: image,
       }]
       
       if (heartImg === whiteHeartIcon) {
@@ -110,8 +119,12 @@ export default function RecipeDetails(props) {
   };
 
   function onShareBtnClick() {
-    copy(`${pathname}`);
-    window.alert('Link copied!');
+    console.log(location.href)
+    copy(location.href);
+    // navigator.clipboard.writeText(location.href);
+    console.log(navigator.clipboard)
+    // copy(`localhost:3000${pathname}`);
+    global.alert('Link copied!');
   }
 
   return (
