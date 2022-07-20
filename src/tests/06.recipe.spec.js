@@ -100,4 +100,16 @@ describe('teste da pagina recipes',()=>{
             expect(screen.getByText(meals.strMeal)).toBeInTheDocument();
          });
     });
+    test('Redirecione a pessoa usuária ao clicar no card para a tela de detalhes para comida',async()=>{
+   //    global.fetch = jest.fn().mockImplementation(mockFetch);
+
+   //    const {history} = renderWithRouter(<App />)
+   //    history.push('/foods');
+   //    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+   //    await waitFor(()=>expect(screen.getByTestId('0-recipe-card')).toBeInTheDocument());
+   //    userEvent.click(screen.getByTestId('0-card-name'));
+
+   //    await waitFor(()=>expect(screen.getByTestId('recipe-title')).toBeInTheDocument());
+   //    expect(history.location.pathname).toBe('/foods/52977');
+     })
 });
