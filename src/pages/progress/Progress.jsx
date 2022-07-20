@@ -42,8 +42,9 @@ export default function Progress() {
   const [progressState, setProgressState] = useState({
     prodInfo: {},
     checkList: getProgress(),
+    popUpCopy: false,
   });
-  const { prodInfo, checkList } = progressState;
+  const { prodInfo, checkList, popUpCopy } = progressState;
 
   useEffect(() => {
     const callRecipe = async () => {
@@ -93,10 +94,13 @@ export default function Progress() {
   };
 
   const timerID = null;
-  const shareHandle = () => {
-    const treatedHREF = href.split('/');
-    copy(href);
+  const shareHandle = async () => {
+    const treatedHREF = window.location.href.split('/in-progress')[0];
+    copy(treatedHREF);
+    setProgressState({ ...progressState, popUpCopy: true });
+    return setTimeout();
   };
+  shareHandle();
 
   if (prodInfo === 'notFound') {
     return <NotFound />;
@@ -168,6 +172,7 @@ export default function Progress() {
                     />
                     <span
                       className={ `${checked ? 'checkedIngredient' : ''}` }
+                      data-testid="ingredient-in-list"
                     >
                       { `${item.measure} ${item.ingredient}` }
                     </span>
