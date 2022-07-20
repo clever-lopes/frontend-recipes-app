@@ -1,13 +1,11 @@
 import drinksCategories from './drinksCategories';
 import meals from './mealsMock';
 import mealCategories from './mealCategories';
-import drinks from './drinksMock';
 import beefMeals from './beefMock';
-import chickenMeals from './chickenMock';
-import withApple from './mealsWithApple';
 
-
-export default function mockFetch(endpoint) {
+export const mealsNerfed = { meals: meals.meals.slice(0, 10) };
+export const beefMealsNerfed = { meals: beefMeals.meals.slice(0, 10) };
+export default function mockSmallFetch(endpoint) {
   return Promise.resolve({
     json: () => {
       switch (endpoint) {
@@ -16,15 +14,10 @@ export default function mockFetch(endpoint) {
         case 'https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list':
           return Promise.resolve(drinksCategories);
         case 'https://www.themealdb.com/api/json/v1/1/search.php?s=':
-          return Promise.resolve(meals);
+          return Promise.resolve(mealsNerfed);
         case 'https://www.themealdb.com/api/json/v1/1/filter.php?c=Beef':
-          return Promise.resolve(beefMeals);
-          case 'https://www.themealdb.com/api/json/v1/1/filter.php?c=Chicken':
-            return Promise.resolve(chickenMeals);
-        case 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=':
-          return Promise.resolve(drinks);
-          case 'https://www.themealdb.com/api/json/v1/1/search.php?s=Apple':
-          return Promise.resolve(withApple);
+          return Promise.resolve(beefMealsNerfed);
+
         default:
           break;
       }
