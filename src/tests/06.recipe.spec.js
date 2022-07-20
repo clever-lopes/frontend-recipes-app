@@ -9,6 +9,7 @@ import drinksCategories from './mocks/drinksCategories';
 import meals from './mocks/mealsMock';
 import chickenMeals from './mocks/chickenMock';
 import {beefMealsNerfed, mealsNerfed} from './mocks/fecthMockSmall';
+import beefMeals from './mocks/beefMock';
 import mockSmallFetch from './mocks/fecthMockSmall';
 
 describe('teste da pagina recipes',()=>{
