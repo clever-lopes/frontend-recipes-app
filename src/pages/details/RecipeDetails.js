@@ -22,10 +22,10 @@ export default function RecipeDetails(props) {
     Instructions: '',
   });
   const { match: { params: { id } } } = props;
-
   const { location: { pathname } } = useHistory();
   const path = pathname.split('/').filter((item) => item);
   const funcMap = path[0] === 'foods' ? mealAPI : drinkAPI;
+  const recommendMap = (path[0] !== 'foods') ? mealAPI : drinkAPI;
 
   useEffect(() => {
     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
@@ -44,13 +44,11 @@ export default function RecipeDetails(props) {
       setFoodObject(result);
     };
     const recommend = async () => {
-      const result = await funcMap.name('');
-      // console.log(result);
+      const result = await recommendMap.name('');
       setRecommendation(result);
-      // console.log(recommendation);
     };
-    firstCall();
     recommend();
+    firstCall();
   }, []);
 
   // useEffect(() => {
@@ -138,25 +136,25 @@ export default function RecipeDetails(props) {
         </h3>
         <button
           type="button"
-          data-testid="favorite-btn"
+          // data-testid="favorite-btn"
           style = {{
             border: 'none',
             background: 'transparent',
           }}
           onClick= { onFavoriteBtnClick }
         >
-          <img src={ heartImg } alt="favorite image" width="17px" />
+          <img data-testid="favorite-btn" src={ heartImg } alt="favorite image" width="17px" />
         </button>
         <button
           type="button"
-          data-testid="share-btn"
+          // data-testid="share-btn"
           style = {{
             border: 'none',
             background: 'transparent',
           }}
           onClick= { onShareBtnClick }
         >
-          <img src={ shareIcon } alt="share image" width="17px" />
+          <img data-testid="share-btn" src={ shareIcon } alt="share image" width="17px" />
         </button>
         <p data-testid="recipe-category">{ foodObject.Alcoholic || foodObject.Category }</p>
         <ul>
@@ -185,6 +183,10 @@ export default function RecipeDetails(props) {
             <button
               type="button"
               data-testid="start-recipe-btn"
+              style = {{
+                position: 'fixed',
+                bottom: '0',
+              }}
             >
               { recipeState }
             </button>)
