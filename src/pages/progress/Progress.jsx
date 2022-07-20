@@ -3,13 +3,16 @@ import { useHistory } from 'react-router-dom';
 import mealAPI from '../../services/mealAPI';
 import drinkAPI from '../../services/drinkAPI';
 import NotFound from '../notFound';
+import shareIcon from '../../images/shareIcon.svg';
+// import blackHeartIcon from '../../images/blackHeartIcon.svg';
+// import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import './CSS/Progress.css';
 
 const copy = require('clipboard-copy');
 
 export default function Progress() {
   const history = useHistory();
-  const { location: { pathname, href } } = history;
+  const { location: { pathname } } = history;
   const params = pathname.split('/').filter((item) => item);
   const [page, id] = params;
   const funcMap = page === 'foods' ? mealAPI : drinkAPI;
@@ -46,6 +49,7 @@ export default function Progress() {
   });
   const { prodInfo, checkList, popUpCopy } = progressState;
 
+  let timerID = null;
   useEffect(() => {
     const callRecipe = async () => {
       const response = await funcMap.getById(id);
@@ -57,6 +61,7 @@ export default function Progress() {
       }
     };
     callRecipe();
+    clearTimeout(timerID);
   }, []);
 
   const addItem = (item) => {
@@ -93,14 +98,38 @@ export default function Progress() {
     }
   };
 
-  const timerID = null;
-  // const shareHandle = async () => {
-  //   const treatedHREF = window.location.href.split('/in-progress')[0];
-  //   copy(treatedHREF);
-  //   setProgressState({ ...progressState, popUpCopy: true });
-  //   return setTimeout();
-  // };
-  // shareHandle();
+  const shareHandle = async () => {
+    const treatedHREF = window.location.href.split('/in-progress')[0];
+    copy(treatedHREF);
+    setProgressState({ ...progressState, popUpCopy: true });
+    timerID = setTimeout(() => {
+      setProgressState({ ...progressState, popUpCopy: false });
+    }, +'2000');
+  };
+
+  const addFavorite = () => {
+    const favObject = {
+      id: prodInfo.idMeal || prodInfo.idDrink,
+      type: prodInfo.Meal ? 'food' : 'drink',
+      nationality: prodInfo.Area || '',
+      category: prodInfo.Category || '',
+      alcoholicOrNot: prodInfo.Alcoholic || '',
+      name: prodInfo.Meal || prodInfo.Drink,
+      image: prodInfo.MealThumb || prodInfo.DrinkThumb,
+    };
+    if (localStorage.favoriteRecipes) {
+      const favRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+      localStorage
+        .setItem('favoriteRecipes', JSON.stringify([...favRecipes, favObject]));
+    } else {
+      localStorage
+        .setItem('favoriteRecipes', JSON.stringify([favObject]));
+    }
+  };
+
+  const removeFavorite = () => {
+
+  };
 
   if (prodInfo === 'notFound') {
     return <NotFound />;
@@ -127,12 +156,23 @@ export default function Progress() {
         />
       </div>
       <div>
-        <button
-          type="button"
-          data-testid="share-btn"
-        >
-          share
-        </button>
+        <div>
+          <button
+            type="button"
+            data-testid="share-btn"
+            onClick={ shareHandle }
+          >
+            <img
+              src={ shareIcon }
+              alt="share icon"
+            />
+          </button>
+          {
+            popUpCopy && (
+              <span>Link copied!</span>
+            )
+          }
+        </div>
         <button
           type="button"
           data-testid="favorite-btn"
