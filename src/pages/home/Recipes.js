@@ -21,7 +21,6 @@ export default function Recipes(props) {
     </div>
   );
 }
-
 Recipes.propTypes = {
   history: propTypes.shape({
     location: propTypes.shape({
