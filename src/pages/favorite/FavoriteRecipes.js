@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
 import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import shareIcon from '../../images/shareIcon.svg';
 
-export default function FavoriteRecipes() {
+export default function FavoriteRecipes(props) {
+  const { history } = props;
   const [data, setData ] = useState([]);
   const [heartImg, setHeartImg] = useState(blackHeartIcon);
 
@@ -14,16 +16,7 @@ export default function FavoriteRecipes() {
     console.log(data)
   }, []);
 
-  function onFavoriteBtnClick(id) {
-    // const { image, name, alcoholicOrNot, category, nationality, type, id } = data;
-    // const image = data.image;
-    // const name = data.name;
-    // const alcoholicOrNot = data.alcoholicOrNot;
-    // const category = data.category;
-    // const nationality = data.nationality;
-    // const type = data.type;
-    // const id = data.id;
-    const identificacao = id;
+  function onFavoriteBtnClick() {
     data.map((element) => {
       console.log(element)
       const { image, name, alcoholicOrNot, category, nationality, type, id } = element;
@@ -58,8 +51,26 @@ export default function FavoriteRecipes() {
         localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipesObj));
       }
       // setHeartImg(heartImg === whiteHeartIcon ? blackHeartIcon : whiteHeartIcon);
-      // setData(favoriteRecipes)
     })
+  }
+
+  function filteredFood() {
+    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    const result = favoriteRecipes.filter((recipe) => recipe.type === 'food');
+    // console.log(result)
+    setData(result);
+  }
+
+  function filteredAll() {
+    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    setData(favoriteRecipes);
+  }
+
+  function filteredDrink() {
+    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    const result = favoriteRecipes.filter((recipe) => recipe.type === 'drink');
+    // console.log(result)
+    setData(result);
   }
 
   return (
@@ -69,18 +80,21 @@ export default function FavoriteRecipes() {
         <button
           type="button"
           data-testid="filter-by-all-btn"
+          onClick={ filteredAll }
         >
           All
         </button>
         <button
           type="button"
           data-testid="filter-by-food-btn"
+          onClick={ filteredFood }
         >
           Food
         </button>
         <button
           type="button"
           data-testid="filter-by-drink-btn"
+          onClick={ filteredDrink }
         >
           Drinks
         </button>
@@ -94,6 +108,7 @@ export default function FavoriteRecipes() {
               src={ item.image }
               alt={ item.name }
               data-testid={ `${index}-horizontal-image` }
+              onClick={ () => history.push(`/${item.type}s/${item.id}`) }
             />
             <button
               type="button"
@@ -106,12 +121,13 @@ export default function FavoriteRecipes() {
               <img data-testid={ `${index}-horizontal-share-btn` } src={ shareIcon } alt="share" width="17px" />
             </button>
             <button
+              data-testid={ `${index}-horizontal-favorite-btn` }
               type="button"
               style={ {
                 border: 'none',
                 background: 'transparent',
               } }
-              onClick={ onFavoriteBtnClick(item.id) }
+              onClick={ onFavoriteBtnClick }
             >
               <img
                 data-testid="favorite-btn"
@@ -127,6 +143,7 @@ export default function FavoriteRecipes() {
             </span>
             <h5
               data-testid={ `${index}-horizontal-name` }
+              onClick={ () => history.push(`/${item.type}s/${item.id}`) }
             >
               { item.name }
             </h5>
@@ -148,3 +165,9 @@ export default function FavoriteRecipes() {
     </div>
   );
 }
+
+FavoriteRecipes.propTypes = {
+  history: PropTypes.shape(
+    PropTypes.func.isRequired,
+  ).isRequired,
+};
