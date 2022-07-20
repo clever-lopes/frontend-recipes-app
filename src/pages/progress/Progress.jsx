@@ -5,23 +5,40 @@ import drinkAPI from '../../services/drinkAPI';
 import NotFound from '../notFound';
 import './CSS/Progress.css';
 
+const copy = require('clipboard-copy');
+
 export default function Progress() {
   const history = useHistory();
-  const { location: { pathname } } = history;
+  const { location: { pathname, href } } = history;
   const params = pathname.split('/').filter((item) => item);
   const [page, id] = params;
   const funcMap = page === 'foods' ? mealAPI : drinkAPI;
   const type = page === 'foods' ? 'meals' : 'cocktails';
+  const KEY_NAME = 'inProgressRecipes';
+
   const getProgress = () => {
     if (localStorage.inProgressRecipes) {
-      const inProgress = JSON.parse(localStorage.getItem('inProgressRecipes'));
-      if (inProgress[type][id]) {
-        return inProgress[type][id];
+      const inProgress = JSON.parse(localStorage.getItem(KEY_NAME));
+      if (inProgress[type]) {
+        if (inProgress[type][id]) {
+          return inProgress[type][id];
+        }
+        localStorage
+          .setItem(KEY_NAME, JSON
+            .stringify({ ...inProgress, [type]: { ...inProgress[type], [id]: [] } }));
+        return [];
       }
+      localStorage
+        .setItem(KEY_NAME, JSON
+          .stringify({ ...inProgress, [type]: { [id]: [] } }));
       return [];
     }
+    localStorage
+      .setItem(KEY_NAME, JSON
+        .stringify({ [type]: { [id]: [] } }));
     return [];
   };
+
   const [progressState, setProgressState] = useState({
     prodInfo: {},
     checkList: getProgress(),
@@ -42,30 +59,21 @@ export default function Progress() {
   }, []);
 
   const addItem = (item) => {
-    let progress;
-    if (localStorage.inProgressRecipes) {
-      progress = JSON.parse(localStorage.getItem('inProgressRecipes'));
-      if (progress[type][id]) {
-        progress = {
-          ...progress,
-          [type]: { ...progress[type], [id]: [...progress[type][id], item] },
-        };
-      } else {
-        progress = { ...progress, [type]: { [id]: [item] } };
-      }
-    } else {
-      progress = { [type]: { [id]: [item] } };
-    }
-    localStorage.setItem('inProgressRecipes', JSON.stringify(progress));
+    let progress = JSON.parse(localStorage.getItem(KEY_NAME));
+    progress = {
+      ...progress,
+      [type]: { ...progress[type], [id]: [...progress[type][id], item] },
+    };
+    localStorage.setItem(KEY_NAME, JSON.stringify(progress));
   };
 
   const removeItem = (item) => {
-    const progress = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    const progress = JSON.parse(localStorage.getItem(KEY_NAME));
     const filtered = progress[type][id].filter((ingredient) => ingredient !== item);
     const info = JSON
       .stringify({ ...progress, [type]: { ...progress[type], [id]: filtered } });
     localStorage
-      .setItem('inProgressRecipes', info);
+      .setItem(KEY_NAME, info);
   };
 
   const checkHandle = ({ target: { value } }) => {
@@ -82,6 +90,12 @@ export default function Progress() {
         checkList: [...checkList, value],
       });
     }
+  };
+
+  const timerID = null;
+  const shareHandle = () => {
+    const treatedHREF = href.split('/');
+    copy(href);
   };
 
   if (prodInfo === 'notFound') {
