@@ -6,6 +6,7 @@ import Progress from '../pages/progress/Progress';
 import RecipeDetails from '../pages/details/RecipeDetails';
 import Profile from '../pages/profile/Profile';
 import NotFound from '../pages/notFound';
+import FavoriteRecipes from '../pages/favorite/FavoriteRecipes';
 
 export default function Routes() {
   return (
@@ -17,6 +18,7 @@ export default function Routes() {
       <Route path="/drinks/:id" component={ RecipeDetails } />
       <Route path="/foods" component={ Recipes } />
       <Route path="/drinks" component={ Recipes } />
+      <Route path="/favorite-recipes" component={ FavoriteRecipes } />
       <Route path="/profile" component={ Profile } />
       <Route path="/*" component={ NotFound } />
     </Switch>
