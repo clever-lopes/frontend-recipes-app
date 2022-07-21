@@ -10,6 +10,7 @@ import readsFavorite,
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
 import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import './CSS/Progress.css';
+import IngredientsList from './IngredientsList';
 
 const copy = require('clipboard-copy');
 
@@ -128,36 +129,11 @@ export default function Progress() {
       </div>
       <div>
         <ul>
-          {
-            prodInfo.ingredients.map((item, i) => {
-              const checked = checkList.includes(item.ingredient);
-              return (
-                <li
-                  data-testid={ `${i}-ingredient-step` }
-                  key={ `${item.ingredient}-${i}` }
-                >
-                  <label
-                    htmlFor={ `${i}-ingredient-step-checkbox` }
-                  >
-                    <input
-                      type="checkbox"
-                      name="ingredient-step"
-                      value={ item.ingredient }
-                      onChange={ checkHandle }
-                      id={ `${i}-ingredient-step-checkbox` }
-                      checked={ checked }
-                    />
-                    <span
-                      className={ `${checked ? 'checkedIngredient' : ''}` }
-                      data-testid="ingredient-in-list"
-                    >
-                      { `${item.measure} ${item.ingredient}` }
-                    </span>
-                  </label>
-                </li>
-              );
-            })
-          }
+          <IngredientsList
+            ingredients={ prodInfo.ingredients }
+            checkList={ checkList }
+            checkHandle={ checkHandle }
+          />
         </ul>
       </div>
       <div>
@@ -173,6 +149,7 @@ export default function Progress() {
           type="button"
           data-testid="finish-recipe-btn"
           disabled={ prodInfo.ingredients.length !== checkList.length }
+          onClick={ () => history.push('/done-recipes') }
         >
           Finish
         </button>
