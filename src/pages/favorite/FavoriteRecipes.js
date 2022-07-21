@@ -4,54 +4,36 @@ import blackHeartIcon from '../../images/blackHeartIcon.svg';
 import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import shareIcon from '../../images/shareIcon.svg';
 
+const copy = require('clipboard-copy');
+
 export default function FavoriteRecipes(props) {
   const { history } = props;
-  const [data, setData ] = useState([]);
+  const [data, setData] = useState([]);
   const [heartImg, setHeartImg] = useState(blackHeartIcon);
+  const [popUp, setPopUp] = useState(false);
+  console.log(location)
 
   useEffect(() => {
     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
     console.log(favoriteRecipes);
     setData(favoriteRecipes);
-    console.log(data)
+    console.log(data);
   }, []);
 
-  function onFavoriteBtnClick() {
-    data.map((element) => {
-      console.log(element)
-      const { image, name, alcoholicOrNot, category, nationality, type, id } = element;
+  function favorite(e) {
+    const id = e.target.alt;
+    if (heartImg === blackHeartIcon) {
       const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-      console.log(favoriteRecipes)
-
-      if (favoriteRecipes) {
-        const favoriteRecipesObj = [...favoriteRecipes, {
-          id,
-          type,
-          nationality,
-          category,
-          alcoholicOrNot,
-          name,
-          image,
-        }];
-        if (heartImg === whiteHeartIcon) {
-          localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipesObj));
-          setHeartImg(heartImg === whiteHeartIcon ? blackHeartIcon : whiteHeartIcon);
-        }
-        if (heartImg === blackHeartIcon) {
-          const newFavoriteRecipes = favoriteRecipes
-            .filter((recipe) => recipe.id !== id);
-          localStorage.setItem('favoriteRecipes', JSON.stringify(newFavoriteRecipes));
-          setHeartImg(heartImg === whiteHeartIcon ? blackHeartIcon : whiteHeartIcon);
-        }
-      } else {
-        const favoriteRecipesObj = [{
-          id, type, nationality, category, alcoholicOrNot, name, image,
-        }];
-  
-        localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipesObj));
-      }
-      // setHeartImg(heartImg === whiteHeartIcon ? blackHeartIcon : whiteHeartIcon);
-    })
+      const newFavoriteRecipes = favoriteRecipes
+        .filter((recipe) => recipe.id !== id);
+      localStorage.setItem('favoriteRecipes', JSON.stringify(newFavoriteRecipes));
+      setHeartImg(whiteHeartIcon);
+    } else {
+      setHeartImg(blackHeartIcon);
+    }
+    setHeartImg(blackHeartIcon);
+    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    setData(favoriteRecipes);
   }
 
   function filteredFood() {
@@ -72,6 +54,17 @@ export default function FavoriteRecipes(props) {
     // console.log(result)
     setData(result);
   }
+
+  // const shareHandle = async () => {
+  //   const treatedHREF = window.location.href.split('/in-progress')[0];
+  //   copy(treatedHREF);
+  //   setPopUp(true);
+  //   timerID = setTimeout(() => {
+  //     setPopUp(false);
+  //   }, +'2000');
+  // };
+
+  let timerID;
 
   return (
     <div>
@@ -103,62 +96,86 @@ export default function FavoriteRecipes(props) {
       <div>
         { data.map((item, index) => (
           <div key={ index }>
-            <img
-              width="250px"
-              src={ item.image }
-              alt={ item.name }
-              data-testid={ `${index}-horizontal-image` }
+            <button
+              type="button"
               onClick={ () => history.push(`/${item.type}s/${item.id}`) }
-            />
-            <button
-              type="button"
-              // data-testid={ `${index}-horizontal-share-btn` }
               style={ {
                 border: 'none',
                 background: 'transparent',
               } }
-            >
-              <img data-testid={ `${index}-horizontal-share-btn` } src={ shareIcon } alt="share" width="17px" />
-            </button>
-            <button
-              data-testid={ `${index}-horizontal-favorite-btn` }
-              type="button"
-              style={ {
-                border: 'none',
-                background: 'transparent',
-              } }
-              onClick={ onFavoriteBtnClick }
             >
               <img
-                data-testid="favorite-btn"
+                width="250px"
+                src={ item.image }
+                alt={ item.name }
+                data-testid={ `${index}-horizontal-image` }
+              />
+            </button>
+            <div>
+              <button
+                type="button"
+                style={ {
+                  border: 'none',
+                  background: 'transparent',
+                } }
+                onClick={ async() => {
+                  copy(`${window.location.href.split('/favorite-recipes')[0]}/${item.type}s/${item.id}`);
+                  setPopUp(true);
+                  timerID = setTimeout(() => {
+                    setPopUp(false);
+                  }, +'2000');
+                } }
+              >
+                <img
+                  data-testid={ `${index}-horizontal-share-btn` }
+                  src={ shareIcon }
+                  alt="share"
+                  width="17px"
+                />
+              </button>
+              {
+                popUp && (
+                  <span>Link copied!</span>
+                )
+              }
+            </div>
+            <button
+              type="button"
+              style={ {
+                border: 'none',
+                background: 'transparent',
+              } }
+              value={ item.id }
+              onClick={ favorite }
+            >
+              <img
+                data-testid={ `${index}-horizontal-favorite-btn` }
                 src={ heartImg }
-                alt="favorite"
+                alt={ item.id }
                 width="17px"
+                value={ item.id }
               />
             </button>
             <span
               data-testid={ `${index}-horizontal-top-text` }
             >
-              { item.category }
+              { item.type === 'food' ? 
+              `${item.nationality} - ${item.category}` : `${item.alcoholicOrNot} - ${item.category}` }
             </span>
-            <h5
-              data-testid={ `${index}-horizontal-name` }
+            <button
+              type="button"
               onClick={ () => history.push(`/${item.type}s/${item.id}`) }
+              style={ {
+                border: 'none',
+                background: 'transparent',
+              } }
             >
-              { item.name }
-            </h5>
-            {/* <p
-              data-testid={ `${index}-horizontal-done-date` }
-            >
-              { `Done in: ${item.data}` }
-            </p> */}
-            {/* {
-              item.tags.map((tag, index) => {
-                <span key={ index }>
-                  { tag }
-                </span>
-              })
-            } */}
+              <h3
+                data-testid={ `${index}-horizontal-name` }
+              >
+                { item.name }
+              </h3>
+            </button>
           </div>
         ))}
       </div>
