@@ -145,6 +145,7 @@ export default function FavoriteRecipes(props) {
                   copy(`${window.location.href
                     .split('/favorite-recipes')[0]}/${item.type}s/${item.id}`);
                   popUpMessage(item.id);
+                  clearTimeout(timerID);
                   timerID = setTimeout(() => {
                     setPopUp(false);
                   }, +'2000');
