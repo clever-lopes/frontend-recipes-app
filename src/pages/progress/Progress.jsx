@@ -4,9 +4,13 @@ import mealAPI from '../../services/mealAPI';
 import drinkAPI from '../../services/drinkAPI';
 import NotFound from '../notFound';
 import shareIcon from '../../images/shareIcon.svg';
-// import blackHeartIcon from '../../images/blackHeartIcon.svg';
-// import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
+import getProgress, { addItem, removeItem } from './getProgress';
+import readsFavorite,
+{ addFavorite, removeFavorite } from '../../components/helpers/readsfavorite';
+import blackHeartIcon from '../../images/blackHeartIcon.svg';
+import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import './CSS/Progress.css';
+import IngredientsList from './IngredientsList';
 
 const copy = require('clipboard-copy');
 
@@ -17,42 +21,18 @@ export default function Progress() {
   const [page, id] = params;
   const funcMap = page === 'foods' ? mealAPI : drinkAPI;
   const type = page === 'foods' ? 'meals' : 'cocktails';
-  const KEY_NAME = 'inProgressRecipes';
-
-  const getProgress = () => {
-    if (localStorage.inProgressRecipes) {
-      const inProgress = JSON.parse(localStorage.getItem(KEY_NAME));
-      if (inProgress[type]) {
-        if (inProgress[type][id]) {
-          return inProgress[type][id];
-        }
-        localStorage
-          .setItem(KEY_NAME, JSON
-            .stringify({ ...inProgress, [type]: { ...inProgress[type], [id]: [] } }));
-        return [];
-      }
-      localStorage
-        .setItem(KEY_NAME, JSON
-          .stringify({ ...inProgress, [type]: { [id]: [] } }));
-      return [];
-    }
-    localStorage
-      .setItem(KEY_NAME, JSON
-        .stringify({ [type]: { [id]: [] } }));
-    return [];
-  };
-
   const [progressState, setProgressState] = useState({
     prodInfo: {},
-    checkList: getProgress(),
-    popUpCopy: false,
+    checkList: getProgress(type, id),
+    isFavorite: readsFavorite(id),
   });
-  const { prodInfo, checkList, popUpCopy } = progressState;
-
+  const [popUp, setPopUp] = useState(false);
+  const { prodInfo, checkList, isFavorite } = progressState;
   let timerID = null;
   useEffect(() => {
     const callRecipe = async () => {
       const response = await funcMap.getById(id);
+      console.log(response);
       if (response) {
         setProgressState({ ...progressState, prodInfo: response });
       } else {
@@ -62,82 +42,40 @@ export default function Progress() {
     callRecipe();
     clearTimeout(timerID);
   }, []);
-
-  const addItem = (item) => {
-    let progress = JSON.parse(localStorage.getItem(KEY_NAME));
-    progress = {
-      ...progress,
-      [type]: { ...progress[type], [id]: [...progress[type][id], item] },
-    };
-    localStorage.setItem(KEY_NAME, JSON.stringify(progress));
-  };
-
-  const removeItem = (item) => {
-    const progress = JSON.parse(localStorage.getItem(KEY_NAME));
-    const filtered = progress[type][id].filter((ingredient) => ingredient !== item);
-    const info = JSON
-      .stringify({ ...progress, [type]: { ...progress[type], [id]: filtered } });
-    localStorage
-      .setItem(KEY_NAME, info);
-  };
-
   const checkHandle = ({ target: { value } }) => {
     if (checkList.includes(value)) {
-      removeItem(value);
+      removeItem(value, type, id);
       setProgressState({
         ...progressState,
         checkList: checkList.filter((item) => item !== value),
       });
     } else {
-      addItem(value);
+      addItem(value, type, id);
       setProgressState({
         ...progressState,
         checkList: [...checkList, value],
       });
     }
   };
-
   const shareHandle = async () => {
     const treatedHREF = window.location.href.split('/in-progress')[0];
     copy(treatedHREF);
-    setProgressState({ ...progressState, popUpCopy: true });
+    setPopUp(true);
     timerID = setTimeout(() => {
-      setProgressState({ ...progressState, popUpCopy: false });
-    }, +'2000');
+      setPopUp(false);
+    }, +'1000');
   };
-
-  const addFavorite = () => {
-    const favObject = {
-      id: prodInfo.idMeal || prodInfo.idDrink,
-      type: prodInfo.Meal ? 'food' : 'drink',
-      nationality: prodInfo.Area || '',
-      category: prodInfo.Category || '',
-      alcoholicOrNot: prodInfo.Alcoholic || '',
-      name: prodInfo.Meal || prodInfo.Drink,
-      image: prodInfo.MealThumb || prodInfo.DrinkThumb,
-    };
-    if (localStorage.favoriteRecipes) {
-      const favRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-      localStorage
-        .setItem('favoriteRecipes', JSON.stringify([...favRecipes, favObject]));
-    } else {
-      localStorage
-        .setItem('favoriteRecipes', JSON.stringify([favObject]));
-    }
+  const favoriteHandle = () => {
+    if (isFavorite) removeFavorite(id);
+    else addFavorite(prodInfo);
+    setProgressState({ ...progressState, isFavorite: !progressState.isFavorite });
   };
-
-  const removeFavorite = () => {
-
-  };
-
   if (prodInfo === 'notFound') {
     return <NotFound />;
   }
-
   if (!prodInfo.Meal && !prodInfo.Drink) {
     return <h1>Loading...</h1>;
   }
-
   return (
     <div>
       <div>
@@ -160,6 +98,7 @@ export default function Progress() {
             type="button"
             data-testid="share-btn"
             onClick={ shareHandle }
+            src={ shareIcon }
           >
             <img
               src={ shareIcon }
@@ -167,7 +106,7 @@ export default function Progress() {
             />
           </button>
           {
-            popUpCopy && (
+            popUp && (
               <span>Link copied!</span>
             )
           }
@@ -175,51 +114,24 @@ export default function Progress() {
         <button
           type="button"
           data-testid="favorite-btn"
+          onClick={ favoriteHandle }
+          src={ isFavorite ? blackHeartIcon : whiteHeartIcon }
         >
-          favorite
+          <img src={ isFavorite ? blackHeartIcon : whiteHeartIcon } alt="heart" />
         </button>
       </div>
       <div>
-        <p
-          data-testid="recipe-category"
-        >
-          {
-            prodInfo.Alcoholic || prodInfo.Category
-          }
+        <p data-testid="recipe-category">
+          {prodInfo.Alcoholic || prodInfo.Category}
         </p>
       </div>
       <div>
         <ul>
-          {
-            prodInfo.ingredients.map((item, i) => {
-              const checked = checkList.includes(item.ingredient);
-              return (
-                <li
-                  data-testid={ `${i}-ingredient-step` }
-                  key={ `${item.ingredient}-${i}` }
-                >
-                  <label
-                    htmlFor={ `${i}-ingredient-step-checkbox` }
-                  >
-                    <input
-                      type="checkbox"
-                      name="ingredient-step"
-                      value={ item.ingredient }
-                      onChange={ checkHandle }
-                      id={ `${i}-ingredient-step-checkbox` }
-                      checked={ checked }
-                    />
-                    <span
-                      className={ `${checked ? 'checkedIngredient' : ''}` }
-                      data-testid="ingredient-in-list"
-                    >
-                      { `${item.measure} ${item.ingredient}` }
-                    </span>
-                  </label>
-                </li>
-              );
-            })
-          }
+          <IngredientsList
+            ingredients={ prodInfo.ingredients }
+            checkList={ checkList }
+            checkHandle={ checkHandle }
+          />
         </ul>
       </div>
       <div>
@@ -234,6 +146,8 @@ export default function Progress() {
         <button
           type="button"
           data-testid="finish-recipe-btn"
+          disabled={ prodInfo.ingredients.length !== checkList.length }
+          onClick={ () => history.push('/done-recipes') }
         >
           Finish
         </button>
