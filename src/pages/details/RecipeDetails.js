@@ -81,8 +81,8 @@ export default function RecipeDetails(props) {
     const alcoholicOrNot = foodObject.Alcoholic ? foodObject.Alcoholic : '';
     const category = foodObject.Category;
     const nationality = foodObject.Area ? foodObject.Area : '';
-    console.log(foodObject);
-    console.log({ ...foodObject, type: foodObject.Meal ? 'food' : 'drink' });
+    // console.log(foodObject);
+    // console.log({ ...foodObject, type: foodObject.Meal ? 'food' : 'drink' });
     const ObjectWithType = { ...foodObject, type: foodObject.Meal ? 'food' : 'drink' };
     const { type } = ObjectWithType;
 
@@ -119,10 +119,10 @@ export default function RecipeDetails(props) {
   }
 
   function onShareBtnClick() {
-    console.log(href);
+    // console.log(href);
     copy(href);
     // navigator.clipboard.writeText(location.href);
-    console.log(navigator.clipboard);
+    // console.log(navigator.clipboard);
     // copy(`localhost:3000${pathname}`);
     global.alert('Link copied!');
   }
@@ -186,7 +186,7 @@ export default function RecipeDetails(props) {
                 key={ index }
                 data-testid={ `${index}-ingredient-name-and-measure` }
               >
-                { ` ${item.measure} of ${item.ingredient} ` }
+                { `${item.measure} of ${item.ingredient}` }
               </li>
             ))
           }
