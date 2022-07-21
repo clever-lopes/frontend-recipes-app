@@ -2,6 +2,7 @@ import propTypes from 'prop-types';
 import React from 'react';
 import profileIcon from '../images/profileIcon.svg';
 import SearchBar from './SearchBar';
+import createTitle from './helpers/createTitle';
 
 export default function Header(props) {
   const {
@@ -11,11 +12,6 @@ export default function Header(props) {
   } = props;
 
   const { location: { pathname } } = history;
-  const createTitle = (title) => {
-    const split = title.toLowerCase().split('');
-    split[0] = split[0].toUpperCase();
-    return split;
-  };
 
   return (
     <header>
