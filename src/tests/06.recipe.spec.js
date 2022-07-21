@@ -6,10 +6,10 @@ import renderWithRouter from './helpers/renderWithRouter';
 import mealCategories from './mocks/mealCategories';
 import mockFetch from './mocks/fecthControl';
 import drinksCategories from './mocks/drinksCategories';
-import beefMeals from './mocks/beefMock';
 import meals from './mocks/mealsMock';
 import chickenMeals from './mocks/chickenMock';
 import {beefMealsNerfed, mealsNerfed} from './mocks/fecthMockSmall';
+import beefMeals from './mocks/beefMock';
 import mockSmallFetch from './mocks/fecthMockSmall';
 
 describe('teste da pagina recipes',()=>{
@@ -100,4 +100,16 @@ describe('teste da pagina recipes',()=>{
             expect(screen.getByText(meals.strMeal)).toBeInTheDocument();
          });
     });
+    test('Redirecione a pessoa usuária ao clicar no card para a tela de detalhes para comida',async()=>{
+   //    global.fetch = jest.fn().mockImplementation(mockFetch);
+
+   //    const {history} = renderWithRouter(<App />)
+   //    history.push('/foods');
+   //    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+   //    await waitFor(()=>expect(screen.getByTestId('0-recipe-card')).toBeInTheDocument());
+   //    userEvent.click(screen.getByTestId('0-card-name'));
+
+   //    await waitFor(()=>expect(screen.getByTestId('recipe-title')).toBeInTheDocument());
+   //    expect(history.location.pathname).toBe('/foods/52977');
+     })
 });
