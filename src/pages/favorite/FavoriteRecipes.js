@@ -1,58 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
-import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import shareIcon from '../../images/shareIcon.svg';
 
 const copy = require('clipboard-copy');
 
 export default function FavoriteRecipes(props) {
+  const getFavorites = () => {
+    if (localStorage.favoriteRecipes) {
+      return JSON.parse(localStorage.getItem('favoriteRecipes'));
+    }
+    return [];
+  };
   const { history } = props;
-  const [data, setData] = useState([]);
-  const [heartImg, setHeartImg] = useState(blackHeartIcon);
+  const [data, setData] = useState(getFavorites());
   const [popUp, setPopUp] = useState(false);
-  console.log(location)
+
+  let timerID = [];
 
   useEffect(() => {
-    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    console.log(favoriteRecipes);
-    setData(favoriteRecipes);
-    console.log(data);
+    timerID.forEach((timeId) => {
+      clearTimeout(timeId);
+    });
   }, []);
 
   function favorite(e) {
     const id = e.target.alt;
-    if (heartImg === blackHeartIcon) {
-      const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-      const newFavoriteRecipes = favoriteRecipes
-        .filter((recipe) => recipe.id !== id);
-      localStorage.setItem('favoriteRecipes', JSON.stringify(newFavoriteRecipes));
-      setHeartImg(whiteHeartIcon);
-    } else {
-      setHeartImg(blackHeartIcon);
-    }
-    setHeartImg(blackHeartIcon);
-    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    setData(favoriteRecipes);
+    const favList = JSON.parse(localStorage.getItem('favoriteRecipes'))
+      .filter((item) => item.id !== id);
+    localStorage.setItem('favoriteRecipes', JSON.stringify([...favList]));
+    setData([...favList]);
   }
 
-  function filteredFood() {
+  function filterType(type) {
     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    const result = favoriteRecipes.filter((recipe) => recipe.type === 'food');
-    // console.log(result)
-    setData(result);
+    return favoriteRecipes.filter((recipe) => recipe.type === type);
   }
 
   function filteredAll() {
-    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    setData(favoriteRecipes);
-  }
-
-  function filteredDrink() {
-    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    const result = favoriteRecipes.filter((recipe) => recipe.type === 'drink');
-    // console.log(result)
-    setData(result);
+    return JSON.parse(localStorage.getItem('favoriteRecipes'));
   }
 
   // const shareHandle = async () => {
@@ -64,7 +50,13 @@ export default function FavoriteRecipes(props) {
   //   }, +'2000');
   // };
 
-  let timerID;
+  if (data.length <= 0) {
+    return (
+      <div>
+        <p>No Favorite Recipes...</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -73,21 +65,21 @@ export default function FavoriteRecipes(props) {
         <button
           type="button"
           data-testid="filter-by-all-btn"
-          onClick={ filteredAll }
+          onClick={ () => setData(filteredAll()) }
         >
           All
         </button>
         <button
           type="button"
           data-testid="filter-by-food-btn"
-          onClick={ filteredFood }
+          onClick={ () => setData(filterType('food')) }
         >
           Food
         </button>
         <button
           type="button"
           data-testid="filter-by-drink-btn"
-          onClick={ filteredDrink }
+          onClick={ () => setData(filterType('drink')) }
         >
           Drinks
         </button>
@@ -118,8 +110,9 @@ export default function FavoriteRecipes(props) {
                   border: 'none',
                   background: 'transparent',
                 } }
-                onClick={ async() => {
-                  copy(`${window.location.href.split('/favorite-recipes')[0]}/${item.type}s/${item.id}`);
+                onClick={ async () => {
+                  copy(`${window.location.href
+                    .split('/favorite-recipes')[0]}/${item.type}s/${item.id}`);
                   setPopUp(true);
                   timerID = setTimeout(() => {
                     setPopUp(false);
@@ -150,7 +143,7 @@ export default function FavoriteRecipes(props) {
             >
               <img
                 data-testid={ `${index}-horizontal-favorite-btn` }
-                src={ heartImg }
+                src={ blackHeartIcon }
                 alt={ item.id }
                 width="17px"
                 value={ item.id }
@@ -159,8 +152,9 @@ export default function FavoriteRecipes(props) {
             <span
               data-testid={ `${index}-horizontal-top-text` }
             >
-              { item.type === 'food' ? 
-              `${item.nationality} - ${item.category}` : `${item.alcoholicOrNot} - ${item.category}` }
+              { item.type === 'food'
+                ? `${item.nationality} - ${item.category}`
+                : `${item.alcoholicOrNot} - ${item.category}` }
             </span>
             <button
               type="button"
