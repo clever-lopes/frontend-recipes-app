@@ -12,17 +12,47 @@ export default function FavoriteRecipes(props) {
     }
     return [];
   };
+  const setPopUpInit = () => {
+    const favList = getFavorites();
+    return favList.reduce((acc, item) => {
+      acc[item.id] = false;
+      return acc;
+    }, {});
+  };
   const { history } = props;
   const [data, setData] = useState(getFavorites());
-  const [popUp, setPopUp] = useState(false);
+  const [popUp, setPopUp] = useState(setPopUpInit());
 
-  let timerID = [];
+  const popUpUpdate = () => {
+    const favList = getFavorites();
+    const newPopUpList = Object.entries(popUp).reduce((acc, item) => {
+      if (favList.some((recipe) => recipe.id === item[0])) {
+        const [id, value] = item;
+        acc[id] = value;
+        return acc;
+      }
+      return acc;
+    }, {});
+    setPopUp(newPopUpList);
+  };
+
+  let timerID = null;
 
   useEffect(() => {
-    timerID.forEach((timeId) => {
-      clearTimeout(timeId);
-    });
+    clearTimeout(timerID);
   }, []);
+
+  const popUpMessage = (id) => {
+    let timeOutId = null;
+    if (timerID === null) {
+      setPopUp({ ...popUp, [id]: true });
+      timeOutId = setTimeout(() => {
+        timerID = null;
+        setPopUp({ ...popUp, [id]: false });
+      }, +'500');
+    }
+    timerID = timeOutId;
+  };
 
   function favorite(e) {
     const id = e.target.alt;
@@ -30,6 +60,7 @@ export default function FavoriteRecipes(props) {
       .filter((item) => item.id !== id);
     localStorage.setItem('favoriteRecipes', JSON.stringify([...favList]));
     setData([...favList]);
+    popUpUpdate();
   }
 
   function filterType(type) {
@@ -113,7 +144,7 @@ export default function FavoriteRecipes(props) {
                 onClick={ async () => {
                   copy(`${window.location.href
                     .split('/favorite-recipes')[0]}/${item.type}s/${item.id}`);
-                  setPopUp(true);
+                  popUpMessage(item.id);
                   timerID = setTimeout(() => {
                     setPopUp(false);
                   }, +'2000');
@@ -127,7 +158,7 @@ export default function FavoriteRecipes(props) {
                 />
               </button>
               {
-                popUp && (
+                popUp[item.id] && (
                   <span>Link copied!</span>
                 )
               }
