@@ -11,6 +11,7 @@ import blackHeartIcon from '../../images/blackHeartIcon.svg';
 import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import './CSS/Progress.css';
 import IngredientsList from './IngredientsList';
+import addDoneRecipe from './addDoneRecipe';
 
 const copy = require('clipboard-copy');
 
@@ -147,7 +148,10 @@ export default function Progress() {
           type="button"
           data-testid="finish-recipe-btn"
           disabled={ prodInfo.ingredients.length !== checkList.length }
-          onClick={ () => history.push('/done-recipes') }
+          onClick={ () => {
+            addDoneRecipe(prodInfo);
+            history.push('/done-recipes');
+          } }
         >
           Finish
         </button>
