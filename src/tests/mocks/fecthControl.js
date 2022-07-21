@@ -7,6 +7,10 @@ import chickenMeals from './chickenMock';
 import withApple from './mealsWithApple';
 import CORBA from './corba';
 import A1_DRINK from './a1Drink';
+import spaghettiMeal from './spaghettiMock';
+import aquamarine from './aquamarineMock';
+import leblebiSoup from './leblebiMock';
+import ggCocktail from './ggMock';
 
 export default function mockFetch(endpoint) {
   return Promise.resolve({
@@ -30,10 +34,20 @@ export default function mockFetch(endpoint) {
           return Promise.resolve(CORBA);
         case 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=52977':
           return Promise.resolve(CORBA);
-          case 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=A1':
+          case 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=01234':
+          return Promise.resolve({meals : null});
+        case 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=52973':
+          return Promise.resolve(leblebiSoup);
+        case 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=A1':
           return Promise.resolve(A1_DRINK);
         case 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=17222':
           return Promise.resolve(A1_DRINK);
+        case 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=15997':
+          return promises.resolve(ggCocktail);
+        case 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=178319':
+          return Promise.resolve(aquamarine);
+        case 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=52771':
+          return Promise.resolve(spaghettiMeal);
         default:
           break;
       }

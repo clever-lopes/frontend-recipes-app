@@ -33,7 +33,7 @@ export default function Progress() {
   useEffect(() => {
     const callRecipe = async () => {
       const response = await funcMap.getById(id);
-      console.log(response);
+      // console.log(response);
       if (response) {
         setProgressState({ ...progressState, prodInfo: response });
       } else {
@@ -127,13 +127,11 @@ export default function Progress() {
         </p>
       </div>
       <div>
-        <ul>
-          <IngredientsList
-            ingredients={ prodInfo.ingredients }
-            checkList={ checkList }
-            checkHandle={ checkHandle }
-          />
-        </ul>
+        <IngredientsList
+          ingredients={ prodInfo.ingredients }
+          checkList={ checkList }
+          checkHandle={ checkHandle }
+        />
       </div>
       <div>
         <h2>Instructions</h2>

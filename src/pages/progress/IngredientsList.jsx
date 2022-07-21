@@ -4,7 +4,7 @@ import propTypes from 'prop-types';
 export default function IngredientsList(props) {
   const { ingredients, checkList, checkHandle } = props;
   return (
-    <div>
+    <ul>
       {
         ingredients.map((item, i) => {
           const checked = checkList.includes(item.ingredient);
@@ -35,7 +35,7 @@ export default function IngredientsList(props) {
           );
         })
       }
-    </div>
+    </ul>
   );
 }
 
