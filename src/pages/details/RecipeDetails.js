@@ -12,9 +12,9 @@ const copy = require('clipboard-copy');
 
 export default function RecipeDetails(props) {
   const [recommendation, setRecommendation] = useState([]);
-  const [recipeState] = useState('Start Recipe');
+  const [recipeState, setRecipeState] = useState('Start Recipe');
   const [heartImg, setHeartImg] = useState(whiteHeartIcon);
-  const [isFinished] = useState(true);
+  const [isFinished, setIsFinished] = useState(true);
   const [foodObject, setFoodObject] = useState({
     DrinkThumb: '',
     Drink: '',
@@ -53,18 +53,30 @@ export default function RecipeDetails(props) {
     firstCall();
   }, []);
 
-  // useEffect(() => {
-  //   const doneRecipes = localStorage.getItem('doneRecipes');
+  useEffect(() => {
+    const doneRecipes = localStorage.getItem('doneRecipes');
+    const inProgressRecipes = localStorage.getItem('inProgressRecipes');
 
-  //   const inProgressRecipes = localStorage.getItem('inProgressRecipes');
+    if(inProgressRecipes) {
+      if(inProgressRecipes.includes(id)) {
+        setRecipeState('Continue Recipe')
+      } else {
+        setRecipeState('Start Recipe')
+      }
+    } else {
+      setRecipeState('Start Recipe')
+    }
 
-  //   const inProgress = foodObject.some((recipe) => food.Drink === inProgressRecipes || food.Meal === inProgressRecipes);
-
-  //   const result = foodObject.some((food) => food.Drink === doneRecipes || food.Meal === doneRecipes);
-
-  //   setIsFinished(!result);
-  //   if (inProgress) setRecipeState('Continue Recipe'); else setRecipeState('Start Recipe');
-  // }, []);
+    if(doneRecipes) {
+      if(doneRecipes.includes(id)) {
+        setIsFinished(false)
+      } else {
+        setIsFinished(true)
+      }
+    } else {
+      setIsFinished(true)
+    }
+  }, []);
 
   function onFavoriteBtnClick() {
     const image = foodObject.MealThumb || foodObject.DrinkThumb;
