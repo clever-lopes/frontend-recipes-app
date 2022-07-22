@@ -11,6 +11,7 @@ import spaghettiMeal from './spaghettiMock';
 import aquamarine from './aquamarineMock';
 import leblebiSoup from './leblebiMock';
 import ggCocktail from './ggMock';
+import drinkSemCat from './drinkSemCategory';
 
 export default function mockFetch(endpoint) {
   return Promise.resolve({
@@ -48,6 +49,8 @@ export default function mockFetch(endpoint) {
           return Promise.resolve(aquamarine);
         case 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=52771':
           return Promise.resolve(spaghettiMeal);
+          case 'https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=127222':
+          return Promise.resolve(drinkSemCat);
         default:
           break;
       }

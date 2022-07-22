@@ -33,7 +33,6 @@ export default function Progress() {
   useEffect(() => {
     const callRecipe = async () => {
       const response = await funcMap.getById(id);
-      // console.log(response);
       if (response) {
         setProgressState({ ...progressState, prodInfo: response });
       } else {

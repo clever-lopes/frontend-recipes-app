@@ -81,6 +81,7 @@ describe('testando a tela de detalhes da receita de', () => {
     expect(startRecipeBtn).toBeInTheDocument();
     expect(shareBtn).toBeInTheDocument();
     expect(recipeCategory.innerHTML).toBe('Vegetarian');
+    expect(recipeInstruction).toBeInTheDocument();
   });
 
   test('verifica se contem todos os elementos na tela de detalhes de bebida', async () => {
@@ -117,6 +118,7 @@ describe('testando a tela de detalhes da receita de', () => {
     expect(startRecipeBtn).toBeInTheDocument();
     expect(shareBtn).toBeInTheDocument();
     expect(recipeCategory.innerHTML).toBe('Alcoholic');
+    expect(recipeInstruction).toBeInTheDocument();
   });
 
   test('testa se ao clicar no botão de favoritos,', async () => {
@@ -143,7 +145,6 @@ describe('testando a tela de detalhes da receita de', () => {
     expect(favoriteBtn.src).toBe('http://localhost/blackHeartIcon.svg');
 
     const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    console.log(favoriteRecipes);
     expect(favoriteRecipes).toBeDefined();
   });
 
@@ -165,5 +166,33 @@ describe('testando a tela de detalhes da receita de', () => {
     const favoriteRecipesUpdated = JSON.parse(localStorage.getItem('favoriteRecipes'));
     
     expect(favoriteRecipesUpdated).toHaveLength(1);
+  });
+
+  test('testa se clicar em share, é copiado o link da receita',async()=>{
+    const { history } = renderWithRouter(<App />);
+    document.execCommand = jest.fn().mockResolvedValue();
+    history.push('drinks/178319');
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+
+    userEvent.click(screen.getByTestId('share-btn'));
+    await new Promise((res) => setTimeout(res, +'500'));
+    expect(document.execCommand).toHaveBeenCalledWith('copy');
+    await waitFor(()=> expect(screen.getByText(/link copied!/i)).toBeInTheDocument());
+  });
+  test('se clicar em start recipes redireciona para recipe-in-progress', async()=>{
+    const { history } = renderWithRouter(<App />);
+    history.push('foods/52771');
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+
+    expect(screen.getByTestId('start-recipe-btn').innerHTML).toBe('Start Recipe');
+    userEvent.click(screen.getByTestId('start-recipe-btn'))
+    expect(history.location.pathname).toBe('/foods/52771/in-progress');
+  });
+  test('se entrar em detalhes de uma comida, e ja estiver em andamento aparece o botao continuar receita', async()=>{
+    const { history } = renderWithRouter(<App />);
+    history.push('foods/52771');
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+    expect(screen.getByTestId('start-recipe-btn').innerHTML).toBe('Continue Recipe');
+
   });
 });

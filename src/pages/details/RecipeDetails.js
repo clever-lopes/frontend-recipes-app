@@ -117,7 +117,6 @@ export default function RecipeDetails(props) {
   }
 
   const shareHandle = async () => {
-    console.log(window.location.href);
     copy(window.location.href);
     setPopUp(true);
     setTimeout(() => {

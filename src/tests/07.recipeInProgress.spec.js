@@ -3,25 +3,34 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 import renderWithRouter from './helpers/renderWithRouter';
-import mealCategories from './mocks/mealCategories';
 import mockFetch from './mocks/fecthControl';
-import drinksCategories from './mocks/drinksCategories';
-import meals from './mocks/mealsMock';
-import chickenMeals from './mocks/chickenMock';
-import { beefMealsNerfed, mealsNerfed } from './mocks/fecthMockSmall';
-import beefMeals from './mocks/beefMock';
-import mockSmallFetch from './mocks/fecthMockSmall';
-import CORBA from './mocks/corba';
-import mealFormat from '../services/helpers/mealFormat';
 
-const shareHandle = async () => {
-  const treatedHREF = window.location.href.split('/in-progress')[0];
-  copy(treatedHREF);
-  setPopUp(true);
-  timerID = setTimeout(() => {
-    setPopUp(false);
-  }, +'1000');
-};
+
+const doneRecipes = [
+  {
+    id: '127222',
+    type: 'drink',
+    nationality: '',
+    category: '',
+    alcoholicOrNot: 'Alcoholic',
+    name: 'A1',
+    image:
+      'https://www.thecocktaildb.com/images/media/drink/2x8thr1504816928.jpg',
+    doneDate: '22/6/2022',
+    tags: ['']
+  },
+  {
+    id: '52977',
+    type: 'food',
+    nationality: 'Turkish',
+    category: 'Side',
+    alcoholicOrNot: '',
+    name: 'Corba',
+    image: 'https://www.themealdb.com/images/media/meals/58oia61564916529.jpg',
+    doneDate: '22/6/2022',
+    tags: ['Soup']
+  }
+];
 describe('testando a tela de receitas em progresso', () => {
   it('verifica elementos de uma receita de comida', async () => {
     global.fetch = jest.fn().mockImplementation(mockFetch);
@@ -180,50 +189,53 @@ describe('testando a tela de receitas em progresso', () => {
     expect(notFound).toBeInTheDocument();
   });
 
-  // test('testa botão de share na pagina de progresso em comidas', async() => {
-  //    global.fetch = jest.fn().mockImplementation(mockFetch)
+  test('testa botão de share na pagina de progresso em comidas', async() => {
+     global.fetch = jest.fn().mockImplementation(mockFetch);
+     document.execCommand = jest.fn().mockResolvedValue();
+    const { history } = renderWithRouter(<App />);
+    history.push('foods/52977/in-progress');
 
-  //   const { history } = renderWithRouter(<App />);
-  //   history.push('foods/52977/in-progress');
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
 
-  //   await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    const shareBtn = screen.getByRole('button', { name: /share icon/i });
 
-  //   const shareBtn = screen.getByRole('button', { name: /share icon/i });
+    expect(shareBtn).toBeInTheDocument();
+    userEvent.click(shareBtn);
 
-  //   expect(shareBtn).toBeInTheDocument();
+    await new Promise((res) => setTimeout(res, +'500'));
+    expect(document.execCommand).toHaveBeenCalledWith('copy');
+  });
 
-  //   userEvent.click(shareBtn);
+  test('testa botão de share na pagina de progresso em bebidas', async () => {
+    global.fetch = jest.fn().mockImplementation(mockFetch);
+    document.execCommand = jest.fn().mockResolvedValue()
 
-  //   expect(screen.getByText(/link copied!/i)).toBeInTheDocument();
-  // });
+    delete window.location;
+    window.location = Object.create(window);
+    window.location.href = 'my-url';
 
-  // test('testa botão de share na pagina de progresso em bebidas', async () => {
-  //   global.fetch = jest.fn().mockImplementation(mockFetch);
+    const { history } = renderWithRouter(<App />);
+    history.push('drinks/17222/in-progress');
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
 
-  //   delete window.location;
-  //   window.location = Object.create(window);
-  //   window.location.href = 'my-url';
+    const shareBtn = screen.getByRole('button', { name: /share icon/i });
 
-  //   const { history } = renderWithRouter(<App />);
-  //   history.push('drinks/17222/in-progress');
-  //   await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+    expect(screen.getByTestId('recipe-title')).toBeInTheDocument();
+    expect(shareBtn).toBeInTheDocument();
+    userEvent.click(shareBtn);
+    await new Promise((res) => setTimeout(res, +'500'));
+    expect(document.execCommand).toHaveBeenCalledWith('copy');
 
-  //   const shareBtn = screen.getByRole('button', { name: /share icon/i });
+     await waitFor(()=> expect(screen.getByText(/link copied!/i)).toBeInTheDocument());
+     setTimeout(()=>{
+      expect(screen.findByText(/link copied!/i)).not.toBeInTheDocument();
+    },3000);
+  });
 
-  //   expect(screen.getByTestId('recipe-title')).toBeInTheDocument();
-  //   expect(shareBtn).toBeInTheDocument();
-
-  //   userEvent.click(shareBtn);
-  //   // Document.execCommand()
-
-  //     expect(window.location.href.split('/in-progress')[0]).not.toBe('my url');
-
-  //    await waitFor(()=> expect(screen.getByText(/link copied!/i)).toBeInTheDocument());
-  // });
   test('se clicar no favoritos salva em favoritos, e se clicar novamente remove, para progress de bebidas', async () => {
     global.fetch = jest.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
-    history.push('drinks/17222/in-progress');
+    history.push('drinks/127222/in-progress');
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
     const favoriteBtn = screen.getByRole('img', { name: /heart/i });
@@ -260,11 +272,11 @@ describe('testando a tela de receitas em progresso', () => {
     expect(JSON.parse(localStorage.getItem('favoriteRecipes'))).toHaveLength(0);
   });
 
-  test('teste se ao clicar em done  redireciona para "/done-recipe"', async () => {
+  test('teste se ao clicar em done em bebidas redireciona para "/done-recipe"', async () => {
     global.fetch = jest.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
 
-    history.push('drinks/17222/in-progress');
+    history.push('drinks/127222/in-progress');
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
     const allCheckBox = Array.from(screen.getAllByRole('checkbox'));
     expect(allCheckBox.length).toBe(4);
@@ -275,5 +287,24 @@ describe('testando a tela de receitas em progresso', () => {
     });
     userEvent.click(screen.getByTestId('finish-recipe-btn'));
     expect(history.location.pathname).toBe('/done-recipes');
+    expect(JSON.parse(localStorage.getItem('doneRecipes'))).toHaveLength(1);
+  });
+  test('teste se ao clicar em done  em comidas redireciona para "/done-recipe"', async () => {
+    global.fetch = jest.fn().mockImplementation(mockFetch);
+    const { history } = renderWithRouter(<App />);
+
+    history.push('foods/52977/in-progress');
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    const allCheckBox = Array.from(screen.getAllByRole('checkbox'));
+    expect(allCheckBox.length).toBe(13);
+
+    allCheckBox.forEach(cada => {
+      userEvent.click(cada);
+      expect(cada).toBeChecked();
+    });
+    userEvent.click(screen.getByTestId('finish-recipe-btn'));
+    expect(history.location.pathname).toBe('/done-recipes');
+    expect(JSON.parse(localStorage.getItem('doneRecipes'))).toHaveLength(2);
+    expect(JSON.parse(localStorage.getItem('doneRecipes'))).toEqual(doneRecipes);
   });
 });

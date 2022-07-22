@@ -1,13 +1,11 @@
 const formatTags = (tagStr) => {
   const tagArray = tagStr.split(',');
-  console.log(tagArray);
   return tagArray;
 };
 
 const addDoneRecipe = (prodInfo) => {
   let doneRecipes;
   const date = new Date();
-  console.log(prodInfo.Tags);
   const newItem = {
     id: prodInfo.idMeal || prodInfo.idDrink,
     type: prodInfo.Meal ? 'food' : 'drink',

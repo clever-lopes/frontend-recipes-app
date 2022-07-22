@@ -10,7 +10,6 @@ export default function Profile(props) {
   useEffect(() => {
     const result = JSON.parse(localStorage.getItem('user'));
     setUser(result.email);
-    console.log(history);
   }, []);
 
   function btnLogout() {
