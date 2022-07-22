@@ -1,21 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
 export default function Profile(props) {
   const { history } = props;
+<<<<<<< HEAD
   const [user, setUser] = useState('');
 
   useEffect(() => {
     const result = JSON.parse(localStorage.getItem('user'));
     setUser(result.email);
   }, []);
+=======
+>>>>>>> 2deb49d1074796b693019e81cd1f1122a9ea1335
 
   function btnLogout() {
     localStorage.clear();
     history.push('/');
   }
+
+  const getUser = () => {
+    if (localStorage.user) {
+      return JSON.parse(localStorage.getItem('user')).email;
+    }
+    return 'not logged';
+  };
 
   return (
     <div>
@@ -28,7 +38,7 @@ export default function Profile(props) {
         <h3
           data-testid="profile-email"
         >
-          { user }
+          { getUser() }
         </h3>
         <button
           type="button"

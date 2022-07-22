@@ -17,34 +17,32 @@ describe('teste da pagina recipes', () => {
 
   test('se renderiza as 5 primeiras categorias de comidas', async () => {
     const { history } = renderWithRouter(<App />);
-    global.fetch = mockFetch;
+    global.fetch = jest.fn().mockImplementation(mockFetch);
     history.push('/foods');
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(screen.getByTestId('Beef-category-filter')).toBeInTheDocument());
 
-    mealCategories.meals
-      .slice(0, 5)
-      .forEach(async ({ strCategory: category }) => {
-        await waitFor(() =>
-          expect(
-            screen.getByTestId(`${category}-category-filter`)
-          ).toBeInTheDocument()
-        );
-      });
+    mealCategories.meals.slice(0, 5).forEach(({ strCategory: category }) => {
+      expect(
+        screen.getByTestId(`${category}-category-filter`)
+      ).toBeInTheDocument();
+    });
     expect(screen.getByTestId('All-category-filter')).toBeInTheDocument();
   });
   test('se renderiza as 5 primeiras categorias de bebidas', async () => {
     const { history } = renderWithRouter(<App />);
-    global.fetch = mockFetch;
+    global.fetch = jest.fn().mockImplementation(mockFetch);
     history.push('/drinks');
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+    await waitFor(() =>
+      expect(screen.getByTestId('Cocoa-category-filter')).toBeInTheDocument()
+    );
 
-    drinksCategories.drinks
-      .slice(0, 5)
-      .forEach(async ({ strCategory: category }) => {
-        await waitFor(() =>
-          expect(
-            screen.getByTestId(`${category}-category-filter`)
-          ).toBeInTheDocument()
-        );
-      });
+    drinksCategories.drinks.slice(0, 5).forEach(({ strCategory: category }) => {
+      expect(
+        screen.getByTestId(`${category}-category-filter`)
+      ).toBeInTheDocument();
+    });
     expect(screen.getByTestId('All-category-filter')).toBeInTheDocument();
   });
   test('se selecionar as categorias traz as receitas da categoria, e se clicar novamente ou se clicar no All, traz as receitas sem filtro por categoria ', async () => {
@@ -131,7 +129,7 @@ describe('teste da pagina recipes', () => {
 
     const { history } = renderWithRouter(<App />);
     history.push('/foods');
-    
+
     await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
 
     userEvent.click(screen.getByTestId('0-card-name'));
@@ -140,16 +138,16 @@ describe('teste da pagina recipes', () => {
     expect(history.location.pathname).toBe('/foods/52973');
   });
   test('Redirecione a pessoa usuária ao clicar no card para a tela de detalhes para bebida', async () => {
-   global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = jest.fn().mockImplementation(mockFetch);
 
-   const { history } = renderWithRouter(<App />);
-   history.push('/drinks');
-   
-   await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+    const { history } = renderWithRouter(<App />);
+    history.push('/drinks');
 
-   userEvent.click(screen.getByText(/a1/i));   
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
 
-   expect(screen.getByTestId('recipe-title')).toBeInTheDocument();
-   expect(history.location.pathname).toBe('/drinks/17222');
- });
+    userEvent.click(screen.getByText(/a1/i));
+
+    expect(screen.getByTestId('recipe-title')).toBeInTheDocument();
+    expect(history.location.pathname).toBe('/drinks/17222');
+  });
 });

@@ -175,10 +175,18 @@ describe('testando a tela de detalhes da receita de', () => {
     await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
 
     userEvent.click(screen.getByTestId('share-btn'));
+
     await new Promise((res) => setTimeout(res, +'500'));
     expect(document.execCommand).toHaveBeenCalledWith('copy');
-    await waitFor(()=> expect(screen.getByText(/link copied!/i)).toBeInTheDocument());
+
+     const spanCopied = await waitFor(()=> screen.findByText(/link copied!/i));
+     await waitFor(()=>expect(spanCopied).toBeInTheDocument());
+     jest.useFakeTimers();
+     jest.runAllTimers();
+     setTimeout(()=> expect(screen.findByText(/link copied!/i)).toBeInTheDocument(), 5000);
+
   });
+
   test('se clicar em start recipes redireciona para recipe-in-progress', async()=>{
     const { history } = renderWithRouter(<App />);
     history.push('foods/52771');

@@ -15,9 +15,7 @@ export default function Recipes(props) {
         isSearchBar
       />
       <RecipeCards />
-      <Footer
-        history={ history }
-      />
+      <Footer />
     </div>
   );
 }
