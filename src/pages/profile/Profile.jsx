@@ -34,14 +34,14 @@ export default function Profile(props) {
         <button
           type="button"
           data-testid="profile-done-btn"
-          onClick={ () => console.log('Done Recipes') }
+          onClick={ () => history.push('/done-recipes') }
         >
           Done Recipes
         </button>
         <button
           type="button"
           data-testid="profile-favorite-btn"
-          onClick={ () => console.log('Favorite Recipes') }
+          onClick={ () => history.push('/favorite-recipes') }
         >
           Favorite Recipes
         </button>
