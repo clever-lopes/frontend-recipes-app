@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import Header from '../../components/Header';
 import FilterButtonAll from '../../components/RecipeCardComponents/FilterButtonAll';
 import FilterButtonType from '../../components/RecipeCardComponents/FilterButtonType';
 import RecipeCardAttribute
@@ -19,10 +21,15 @@ export default function DoneRecipes() {
   };
   const [data, setData] = useState(getDone());
   const [popUp, setPopUp] = useState(setPopUpInit());
+  const history = useHistory();
 
   return (
     <div>
-      <h1>Done Recipes</h1>
+      <Header
+        currentPage="Done Recipes"
+        history={ history }
+        isSearchBar={ false }
+      />
       <div>
         <FilterButtonAll setState={ setData } target="doneRecipes" />
         <FilterButtonType type="food" setState={ setData } target="doneRecipes" />
