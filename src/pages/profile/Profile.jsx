@@ -5,15 +5,6 @@ import Footer from '../../components/Footer';
 
 export default function Profile(props) {
   const { history } = props;
-<<<<<<< HEAD
-  const [user, setUser] = useState('');
-
-  useEffect(() => {
-    const result = JSON.parse(localStorage.getItem('user'));
-    setUser(result.email);
-  }, []);
-=======
->>>>>>> 2deb49d1074796b693019e81cd1f1122a9ea1335
 
   function btnLogout() {
     localStorage.clear();

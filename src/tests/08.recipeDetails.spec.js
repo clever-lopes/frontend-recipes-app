@@ -3,16 +3,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 import renderWithRouter from './helpers/renderWithRouter';
-import mealCategories from './mocks/mealCategories';
 import mockFetch from './mocks/fecthControl';
-import drinksCategories from './mocks/drinksCategories';
-import meals from './mocks/mealsMock';
-import chickenMeals from './mocks/chickenMock';
-import { beefMealsNerfed, mealsNerfed } from './mocks/fecthMockSmall';
-import beefMeals from './mocks/beefMock';
-import mockSmallFetch from './mocks/fecthMockSmall';
-import CORBA from './mocks/corba';
-import mealFormat from '../services/helpers/mealFormat';
 
 const listaDefavoritos = [
   {
@@ -163,12 +154,14 @@ describe('testando a tela de detalhes da receita de', () => {
 
     userEvent.click(favoriteBtn);
 
-    const favoriteRecipesUpdated = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    
+    const favoriteRecipesUpdated = JSON.parse(
+      localStorage.getItem('favoriteRecipes')
+    );
+
     expect(favoriteRecipesUpdated).toHaveLength(1);
   });
 
-  test('testa se clicar em share, é copiado o link da receita',async()=>{
+  test('testa se clicar em share, é copiado o link da receita', async () => {
     const { history } = renderWithRouter(<App />);
     document.execCommand = jest.fn().mockResolvedValue();
     history.push('drinks/178319');
@@ -176,31 +169,75 @@ describe('testando a tela de detalhes da receita de', () => {
 
     userEvent.click(screen.getByTestId('share-btn'));
 
-    await new Promise((res) => setTimeout(res, +'500'));
+    await new Promise(res => setTimeout(res, +'500'));
     expect(document.execCommand).toHaveBeenCalledWith('copy');
 
-     const spanCopied = await waitFor(()=> screen.findByText(/link copied!/i));
-     await waitFor(()=>expect(spanCopied).toBeInTheDocument());
-     jest.useFakeTimers();
-     jest.runAllTimers();
-     setTimeout(()=> expect(screen.findByText(/link copied!/i)).toBeInTheDocument(), 5000);
+    const spanCopied = await waitFor(() => screen.findByText(/link copied!/i));
+    await waitFor(() => expect(spanCopied).toBeInTheDocument());
 
+    await new Promise(res => setTimeout(res, 3000));
+    expect(spanCopied).not.toBeInTheDocument();
   });
 
-  test('se clicar em start recipes redireciona para recipe-in-progress', async()=>{
+  test('se clicar em start recipes redireciona para recipe-in-progress', async () => {
     const { history } = renderWithRouter(<App />);
     history.push('foods/52771');
     await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
 
-    expect(screen.getByTestId('start-recipe-btn').innerHTML).toBe('Start Recipe');
-    userEvent.click(screen.getByTestId('start-recipe-btn'))
+    expect(screen.getByTestId('start-recipe-btn').innerHTML).toBe(
+      'Start Recipe'
+    );
+    userEvent.click(screen.getByTestId('start-recipe-btn'));
     expect(history.location.pathname).toBe('/foods/52771/in-progress');
   });
-  test('se entrar em detalhes de uma comida, e ja estiver em andamento aparece o botao continuar receita', async()=>{
+  test('se entrar em detalhes de uma comida, e ja estiver em andamento aparece o botao continuar receita', async () => {
     const { history } = renderWithRouter(<App />);
     history.push('foods/52771');
     await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
-    expect(screen.getByTestId('start-recipe-btn').innerHTML).toBe('Continue Recipe');
+    expect(screen.getByTestId('start-recipe-btn').innerHTML).toBe(
+      'Continue Recipe'
+    );
+  });
+  test('se entrar em detalhes de uma bebida, e clicar no botao start recipe, é redirecionado para start recipe', async () => {
+    const { history } = renderWithRouter(<App />);
+    history.push('drinks/17222');
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+    expect(screen.getByTestId('start-recipe-btn').innerHTML).toBe(
+      'Start Recipe'
+    );
+    userEvent.click(screen.getByTestId('start-recipe-btn'));
+    expect(
+      Object.keys(JSON.parse(localStorage.getItem('inProgressRecipes')))
+    ).toHaveLength(2);
+  });
 
+  test('se a receita estiver concluida, nao mostra o botão "Start recipe"', async () => {
+    const { history } = renderWithRouter(<App />);
+    history.push('foods/52771');
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+    const startRecipe = screen.getByTestId('start-recipe-btn');
+    expect(startRecipe).toBeInTheDocument();
+
+    localStorage.setItem(
+      'doneRecipes',
+      JSON.stringify([
+        {
+          alcoholicOrNot: '',
+          category: 'Vegetarian',
+          doneDate: '22/6/2022',
+          id: '52771',
+          image:
+            'https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg',
+          name: 'Spicy Arrabiata Penne',
+          nationality: 'Italian',
+          tags: ['Pasta', 'Curry'],
+          type: 'food'
+        }
+      ])
+    );
+
+    history.push('foods/52771');
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+    await waitFor(()=>expect(startRecipe).not.toBeInTheDocument());
   });
 });

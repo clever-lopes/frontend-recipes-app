@@ -226,10 +226,12 @@ describe('testando a tela de receitas em progresso', () => {
     await new Promise((res) => setTimeout(res, +'500'));
     expect(document.execCommand).toHaveBeenCalledWith('copy');
 
-     await waitFor(()=> expect(screen.getByText(/link copied!/i)).toBeInTheDocument());
-     setTimeout(()=>{
-      expect(screen.findByText(/link copied!/i)).not.toBeInTheDocument();
-    },3000);
+    const spanCopied = await waitFor(()=> screen.findByText(/link copied!/i));
+    await waitFor(()=>expect(spanCopied).toBeInTheDocument());
+
+
+    await new Promise((res)=> setTimeout(res,3000));
+      expect(spanCopied).not.toBeInTheDocument();
   });
 
   test('se clicar no favoritos salva em favoritos, e se clicar novamente remove, para progress de bebidas', async () => {
