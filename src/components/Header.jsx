@@ -28,6 +28,20 @@ export default function Header(props) {
         />
       </button>
       <h3 data-testid="page-title">{ createTitle(currentPage) }</h3>
+      <div>
+        <button
+          type="button"
+          onClick={ () => history.push('/favorite-recipes') }
+        >
+          Favorites
+        </button>
+        <button
+          type="button"
+          onClick={ () => history.push('/done-recipes') }
+        >
+          Done
+        </button>
+      </div>
       { isSearchBar && <SearchBar
         history={ history }
         key={ currentPage }

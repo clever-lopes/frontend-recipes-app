@@ -7,13 +7,16 @@ import Carousel from './components/Carousel';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
 import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import shareIcon from '../../images/shareIcon.svg';
+import getFavorites from '../../components/helpers/getFavorites';
+import { addFavorite, removeFavorite } from '../../components/helpers/readsfavorite';
 
 const copy = require('clipboard-copy');
 
+const START_RECIPE = 'Start Recipe';
+
 export default function RecipeDetails(props) {
   const [recommendation, setRecommendation] = useState([]);
-  const [recipeState, setRecipeState] = useState('Start Recipe');
-  const [heartImg, setHeartImg] = useState(whiteHeartIcon);
+  const [recipeState, setRecipeState] = useState(START_RECIPE);
   const [isFinished, setIsFinished] = useState(true);
   const [foodObject, setFoodObject] = useState({
     DrinkThumb: '',
@@ -28,16 +31,12 @@ export default function RecipeDetails(props) {
   const path = pathname.split('/').filter((item) => item);
   const funcMap = path[0] === 'foods' ? mealAPI : drinkAPI;
   const recommendMap = (path[0] !== 'foods') ? mealAPI : drinkAPI;
+  const [heartImg, setHeartImg] = useState(getFavorites().some((item) => item.id === id));
+
+  let timerID;
 
   useEffect(() => {
-    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-
-    if (favoriteRecipes) {
-      const result = favoriteRecipes.find((recipe) => recipe.id === id);
-      if (result) {
-        setHeartImg(blackHeartIcon);
-      }
-    }
+    clearTimeout(timerID);
   }, []);
 
   useEffect(() => {
@@ -57,65 +56,36 @@ export default function RecipeDetails(props) {
     const doneRecipes = localStorage.getItem('doneRecipes');
     const inProgressRecipes = localStorage.getItem('inProgressRecipes');
 
-    if(inProgressRecipes) {
-      if(inProgressRecipes.includes(id)) {
-        setRecipeState('Continue Recipe')
+    if (inProgressRecipes) {
+      if (inProgressRecipes.includes(id)) {
+        setRecipeState('Continue Recipe');
       } else {
-        setRecipeState('Start Recipe')
+        setRecipeState(START_RECIPE);
       }
     } else {
-      setRecipeState('Start Recipe')
+      setRecipeState(START_RECIPE);
     }
 
-    if(doneRecipes) {
-      if(doneRecipes.includes(id)) {
-        setIsFinished(false)
+    if (doneRecipes) {
+      if (doneRecipes.includes(id)) {
+        setIsFinished(false);
       } else {
-        setIsFinished(true)
+        setIsFinished(true);
       }
     } else {
-      setIsFinished(true)
+      setIsFinished(true);
     }
   }, []);
 
   function onFavoriteBtnClick() {
-    const image = foodObject.MealThumb || foodObject.DrinkThumb;
-    const name = foodObject.Meal || foodObject.Drink;
-    const alcoholicOrNot = foodObject.Alcoholic ? foodObject.Alcoholic : '';
-    const category = foodObject.Category;
-    const nationality = foodObject.Area ? foodObject.Area : '';
-    const ObjectWithType = { ...foodObject, type: foodObject.Meal ? 'food' : 'drink' };
-    const { type } = ObjectWithType;
-    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-
-    if (favoriteRecipes) {
-      const favoriteRecipesObj = [...favoriteRecipes, {
-        id,
-        type,
-        nationality,
-        category,
-        alcoholicOrNot,
-        name,
-        image,
-      }];
-      if (heartImg === whiteHeartIcon) {
-        localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipesObj));
-      }
-      if (heartImg === blackHeartIcon) {
-        const newFavoriteRecipes = favoriteRecipesObj
-          .filter((recipe) => recipe.id !== id);
-        localStorage.setItem('favoriteRecipes', JSON.stringify(newFavoriteRecipes));
-      }
+    if (heartImg) {
+      removeFavorite(id);
     } else {
-      const favoriteRecipesObj = [{
-        id, type, nationality, category, alcoholicOrNot, name, image,
-      }];
-      localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipesObj));
+      addFavorite(foodObject);
     }
-    setHeartImg(heartImg === whiteHeartIcon ? blackHeartIcon : whiteHeartIcon);
+    setHeartImg(!heartImg);
   }
 
-  let timerID;
   const shareHandle = async () => {
     console.log(window.location.href);
     copy(window.location.href);
@@ -155,7 +125,7 @@ export default function RecipeDetails(props) {
         >
           <img
             data-testid="favorite-btn"
-            src={ heartImg }
+            src={ heartImg ? blackHeartIcon : whiteHeartIcon }
             alt="favorite"
             width="17px"
           />
