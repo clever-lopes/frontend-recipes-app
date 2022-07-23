@@ -12,10 +12,17 @@ import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import './CSS/Progress.css';
 import IngredientsList from './IngredientsList';
 import addDoneRecipe from './addDoneRecipe';
+import unDoneRecipe from './unDoneRecipe';
 
 const copy = require('clipboard-copy');
 
 export default function Progress() {
+  if (!localStorage.inProgressRecipes) {
+    localStorage.setItem('inProgressRecipes', JSON.stringify({
+      cocktails: {},
+      meals: {},
+    }));
+  }
   const history = useHistory();
   const { location: { pathname } } = history;
   const params = pathname.split('/').filter((item) => item);
@@ -147,6 +154,7 @@ export default function Progress() {
           disabled={ prodInfo.ingredients.length !== checkList.length }
           onClick={ () => {
             addDoneRecipe(prodInfo);
+            unDoneRecipe(prodInfo);
             history.push('/done-recipes');
           } }
         >

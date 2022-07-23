@@ -213,14 +213,13 @@ describe('testando a tela de detalhes da receita de', () => {
 
   test('se a receita estiver concluida, nao mostra o botão "Start recipe"', async () => {
     const { history } = renderWithRouter(<App />);
-    history.push('foods/52771');
+    history.push('/foods/52771');
     await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
     const startRecipe = screen.getByTestId('start-recipe-btn');
     expect(startRecipe).toBeInTheDocument();
 
-    localStorage.setItem(
-      'doneRecipes',
-      JSON.stringify([
+    localStorage.doneRecipes = JSON.stringify(
+      [
         {
           alcoholicOrNot: '',
           category: 'Vegetarian',
@@ -231,13 +230,13 @@ describe('testando a tela de detalhes da receita de', () => {
           name: 'Spicy Arrabiata Penne',
           nationality: 'Italian',
           tags: ['Pasta', 'Curry'],
-          type: 'food'
+          type: 'food',
         }
-      ])
-    );
+      ]
+    )
 
-    history.push('foods/52771');
-    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
+    history.push('/foods');
+    history.push('/foods/52771')
     await waitFor(()=>expect(startRecipe).not.toBeInTheDocument());
   });
 });
