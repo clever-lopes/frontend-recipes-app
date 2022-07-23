@@ -21,11 +21,11 @@ async function getById(id) {
     .then((res) => mealFormat(res.meals)[0]);
 }
 
-async function randomOne() {
-  return fetch('https://www.themealdb.com/api/json/v1/1/random.php')
-    .then((res) => res.json())
-    .then((res) => mealFormat(res.meals)[0]);
-}
+// async function randomOne() {
+//   return fetch('https://www.themealdb.com/api/json/v1/1/random.php')
+//     .then((res) => res.json())
+//     .then((res) => mealFormat(res.meals)[0]);
+// }
 
 async function getCategories() {
   return fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list')
@@ -33,11 +33,11 @@ async function getCategories() {
     .then((res) => formatCategory(res.meals));
 }
 
-async function getAreas() {
-  return fetch('https://www.themealdb.com/api/json/v1/1/list.php?a=list')
-    .then((res) => res.json())
-    .then((res) => formatCategory(res.meals));
-}
+// async function getAreas() {
+//   return fetch('https://www.themealdb.com/api/json/v1/1/list.php?a=list')
+//     .then((res) => res.json())
+//     .then((res) => formatCategory(res.meals));
+// }
 
 async function filterByIngredient(ingredient) {
   return fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`)
@@ -45,11 +45,11 @@ async function filterByIngredient(ingredient) {
     .then((res) => formatCategory(res.meals));
 }
 
-async function filterByArea(area) {
-  return fetch(`www.themealdb.com/api/json/v1/1/filter.php?a=${area}`)
-    .then((res) => res.json())
-    .then((res) => formatCategory(res.meals));
-}
+// async function filterByArea(area) {
+//   return fetch(`www.themealdb.com/api/json/v1/1/filter.php?a=${area}`)
+//     .then((res) => res.json())
+//     .then((res) => formatCategory(res.meals));
+// }
 
 async function filterByCategory(category) {
   return fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`)
@@ -61,11 +61,8 @@ const mealAPI = {
   name,
   firstLetter,
   getById,
-  randomOne,
   getCategories,
-  getAreas,
   filterByIngredient,
-  filterByArea,
   filterByCategory,
 };
 

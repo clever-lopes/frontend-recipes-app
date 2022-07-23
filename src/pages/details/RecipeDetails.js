@@ -50,7 +50,7 @@ export default function RecipeDetails(props) {
     !JSON.parse(localStorage.getItem('doneRecipes')).map((item) => item.id).includes(id)
   );
 
-  console.log(doneState());
+  // console.log(doneState());
 
   let timerID;
 

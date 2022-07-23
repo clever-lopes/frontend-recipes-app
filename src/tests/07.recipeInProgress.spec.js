@@ -16,7 +16,7 @@ const doneRecipes = [
     name: 'A1',
     image:
       'https://www.thecocktaildb.com/images/media/drink/2x8thr1504816928.jpg',
-    doneDate: '22/6/2022',
+    doneDate: '23/6/2022',
     tags: ['']
   },
   {
@@ -27,7 +27,7 @@ const doneRecipes = [
     alcoholicOrNot: '',
     name: 'Corba',
     image: 'https://www.themealdb.com/images/media/meals/58oia61564916529.jpg',
-    doneDate: '22/6/2022',
+    doneDate: '23/6/2022',
     tags: ['Soup']
   }
 ];

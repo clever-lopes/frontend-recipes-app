@@ -15,11 +15,11 @@ async function firstLetter(letter) {
     .then((res) => mealFormat(res.drinks));
 }
 
-async function getIngridientByName(word) {
-  return fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?i=${word}`)
-    .then((res) => res.json())
-    .then((res) => formatCategory(res.ingredients));
-}
+// async function getIngridientByName(word) {
+//   return fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?i=${word}`)
+//     .then((res) => res.json())
+//     .then((res) => formatCategory(res.ingredients));
+// }
 
 async function getById(id) {
   return fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`)
@@ -27,17 +27,17 @@ async function getById(id) {
     .then((res) => mealFormat(res.drinks)[0]);
 }
 
-async function getIngredientById() {
-  return fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?iid==${word}`)
-    .then((res) => res.json())
-    .then((res) => formatCategory(res.ingredients));
-}
+// async function getIngredientById() {
+//   return fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?iid==${word}`)
+//     .then((res) => res.json())
+//     .then((res) => formatCategory(res.ingredients));
+// }
 
-async function randomOne() {
-  return fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php')
-    .then((res) => res.json())
-    .then((res) => mealFormat(res.drinks)[0]);
-}
+// async function randomOne() {
+//   return fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php')
+//     .then((res) => res.json())
+//     .then((res) => mealFormat(res.drinks)[0]);
+// }
 
 async function filterByIngredient(ingredient) {
   return fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${ingredient}`)
@@ -45,14 +45,14 @@ async function filterByIngredient(ingredient) {
     .then((res) => formatCategory(res.drinks));
 }
 
-async function filterByAlcoholic(isAlcoholic) {
-  const endpoint = isAlcoholic
-    ? 'https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Alcoholic'
-    : 'https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Non_Alcoholic';
-  return fetch(endpoint)
-    .then((res) => res.json())
-    .then((res) => formatCategory(res.drinks));
-}
+// async function filterByAlcoholic(isAlcoholic) {
+//   const endpoint = isAlcoholic
+//     ? 'https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Alcoholic'
+//     : 'https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Non_Alcoholic';
+//   return fetch(endpoint)
+//     .then((res) => res.json())
+//     .then((res) => formatCategory(res.drinks));
+// }
 
 async function filterByCategory(category) {
   return fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${category}`)
@@ -69,12 +69,11 @@ async function getCategories() {
 const drinkAPI = {
   name,
   firstLetter,
-  getIngridientByName,
+  // getIngridientByName,
   getById,
-  getIngredientById,
-  randomOne,
+  // getIngredientById,
   filterByIngredient,
-  filterByAlcoholic,
+  // filterByAlcoholic,
   filterByCategory,
   getCategories,
 };

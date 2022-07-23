@@ -9,6 +9,8 @@ import MEAL_BY_IGREDIENTE from './mocks/mealByIgrediente';
 import CORBA from './mocks/corba';
 import A1_DRINK from './mocks/a1Drink';
 import mockFetch from './mocks/fecthControl';
+import drinksByIgredients from './mocks/drinksByIgredients';
+import drinkByLetter from './mocks/drinksByLetter';
 
 describe('teste do componente barra de pesquisa', () => {
   test('se contém todos os elementos necessarios para a pesquisa', () => {
@@ -53,7 +55,7 @@ describe('teste do componente barra de pesquisa', () => {
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalledWith(endpoint));
   });
-  test('Se o radio selecionado for First letter, a busca na API é feita corretamente pelo primeira letra', async () => {
+  test('Se o radio selecionado for First letter, a busca de comida na API é feita corretamente pelo primeira letra', async () => {
     const endpoint = 'https://www.themealdb.com/api/json/v1/1/search.php?f=a';
 
     global.fetch = jest.fn().mockResolvedValue({
@@ -75,6 +77,47 @@ describe('teste do componente barra de pesquisa', () => {
     userEvent.click(searchbtn);
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalledWith(endpoint));
+  });
+  test('Se o radio selecionado for First letter, a busca de bebida na API é feita corretamente pelo primeira letra', async () => {
+    const endpoint = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?f=a';
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue(drinkByLetter)
+    });
+
+    const { history } = renderWithRouter(<App />);
+    history.push('/drinks');
+
+    const iconSearchBar = screen.getByTestId('search-top-btn');
+    userEvent.click(iconSearchBar);
+
+    const searchInput = screen.getByTestId('search-input');
+    const letterRadio = screen.getByTestId('first-letter-search-radio');
+    const searchbtn = screen.getByTestId('exec-search-btn');
+
+    userEvent.type(searchInput, 'a');
+    userEvent.click(letterRadio);
+    userEvent.click(searchbtn);
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledWith(endpoint));
+  });
+  test('Se o radio selecionado for First letter, e nenhum item for encontrado, deve aparecer um alert ', async () => {
+    global.fetch = jest.fn().mockResolvedValue(mockFetch);
+
+    window.alert = jest.fn();
+    const { history } = renderWithRouter(<App />);
+    history.push('/drinks');
+    const iconSearchBar = screen.getByTestId('search-top-btn');
+    userEvent.click(iconSearchBar);
+
+    const searchInput = screen.getByTestId('search-input');
+    const letterRadio = screen.getByTestId('first-letter-search-radio');
+    const searchbtn = screen.getByTestId('exec-search-btn');
+
+    userEvent.type(searchInput, 'xx');
+    userEvent.click(letterRadio);
+    userEvent.click(searchbtn);
+
+    expect(window.alert).toBeCalled();
   });
 
   test('Se o radio selecionado for First letter e a busca na API for feita com mais de uma letra, deve-se exibir um alert', async () => {
@@ -100,7 +143,7 @@ describe('teste do componente barra de pesquisa', () => {
     expect(window.alert).toBeCalled();
   });
 
-  test('Se o radio selecionado for Igredientes, a busca na API é feita corretamente pelo igrediente', async () => {
+  test('Em foods se o radio selecionado for Igredientes, a busca na API é feita corretamente pelo igrediente', async () => {
     const endpoint =
       'https://www.themealdb.com/api/json/v1/1/filter.php?i=chicken';
 
@@ -119,6 +162,30 @@ describe('teste do componente barra de pesquisa', () => {
     const searchbtn = screen.getByTestId('exec-search-btn');
 
     userEvent.type(searchInput, 'chicken');
+    userEvent.click(ingredientRadio);
+    userEvent.click(searchbtn);
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledWith(endpoint));
+  });
+
+  test('Em drinks se o radio selecionado for Igredientes, a busca na API é feita corretamente pelo igrediente', async () => {
+    const endpoint = 'https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=vodka';
+
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue(drinksByIgredients)
+    });
+
+    const { history } = renderWithRouter(<App />);
+    history.push('/drinks');
+
+    const iconSearchBar = screen.getByTestId('search-top-btn');
+    userEvent.click(iconSearchBar);
+
+    const searchInput = screen.getByTestId('search-input');
+    const ingredientRadio = screen.getByTestId('ingredient-search-radio');
+    const searchbtn = screen.getByTestId('exec-search-btn');
+
+    userEvent.type(searchInput, 'vodka');
     userEvent.click(ingredientRadio);
     userEvent.click(searchbtn);
 
