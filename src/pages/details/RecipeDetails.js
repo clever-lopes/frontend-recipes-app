@@ -12,12 +12,16 @@ import { addFavorite, removeFavorite } from '../../components/helpers/readsfavor
 
 const copy = require('clipboard-copy');
 
-const START_RECIPE = 'Start Recipe';
-
 export default function RecipeDetails(props) {
+  if (!localStorage.doneRecipes) localStorage.setItem('doneRecipes', JSON.stringify([]));
+  if (!localStorage.inProgressRecipes) {
+    localStorage.setItem('inProgressRecipes', JSON.stringify({
+      cocktails: {},
+      meals: {},
+    }));
+  }
+
   const [recommendation, setRecommendation] = useState([]);
-  const [recipeState, setRecipeState] = useState(START_RECIPE);
-  const [isFinished, setIsFinished] = useState(true);
   const [foodObject, setFoodObject] = useState({
     DrinkThumb: '',
     Drink: '',
@@ -33,11 +37,22 @@ export default function RecipeDetails(props) {
   const recommendMap = (path[0] !== 'foods') ? mealAPI : drinkAPI;
   const [heartImg, setHeartImg] = useState(getFavorites().some((item) => item.id === id));
 
-  let timerID;
+  const recipeState = () => {
+    const idKeys = Object.values(JSON.parse(localStorage.getItem('inProgressRecipes')));
+    const accKeys = idKeys.reduce((acc, item) => {
+      acc = [...acc, ...Object.keys(item)];
+      return acc;
+    }, []);
+    return accKeys.includes(id);
+  };
 
-  useEffect(() => {
-    clearTimeout(timerID);
-  }, []);
+  const doneState = () => (
+    !JSON.parse(localStorage.getItem('doneRecipes')).map((item) => item.id).includes(id)
+  );
+
+  console.log(doneState());
+
+  let timerID;
 
   useEffect(() => {
     const firstCall = async () => {
@@ -50,31 +65,7 @@ export default function RecipeDetails(props) {
     };
     recommend();
     firstCall();
-  }, []);
-
-  useEffect(() => {
-    const doneRecipes = localStorage.getItem('doneRecipes');
-    const inProgressRecipes = localStorage.getItem('inProgressRecipes');
-
-    if (inProgressRecipes) {
-      if (inProgressRecipes.includes(id)) {
-        setRecipeState('Continue Recipe');
-      } else {
-        setRecipeState(START_RECIPE);
-      }
-    } else {
-      setRecipeState(START_RECIPE);
-    }
-
-    if (doneRecipes) {
-      if (doneRecipes.includes(id)) {
-        setIsFinished(false);
-      } else {
-        setIsFinished(true);
-      }
-    } else {
-      setIsFinished(true);
-    }
+    clearTimeout(timerID);
   }, []);
 
   function onFavoriteBtnClick() {
@@ -177,7 +168,7 @@ export default function RecipeDetails(props) {
       <Carousel recommendation={ recommendation } />
       <div>
         {
-          isFinished && (
+          doneState() && (
             <button
               type="button"
               data-testid="start-recipe-btn"
@@ -187,7 +178,7 @@ export default function RecipeDetails(props) {
               } }
               onClick={ () => history.push(`${pathname}/in-progress`) }
             >
-              { recipeState }
+              { recipeState() ? 'Continue Recipe' : 'Start Recipe'}
             </button>)
         }
       </div>
