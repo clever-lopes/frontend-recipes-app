@@ -87,4 +87,16 @@ describe('teste do Hearder se aparece corretamente nas paginas, e se o searchbar
       expect(screen.getByText(/b-52/i)).toBeInTheDocument();
     });
   });
+  test('se clicar em favorites vá para pagina de favorites,', () => {
+    const { history } = renderWithRouter(<App />);
+    history.push('/foods');
+     userEvent.click(screen.getByRole('button', { name: /favorites/i }));
+     expect(history.location.pathname).toBe('/favorite-recipes');
+  });
+  test('se clicar em Done vá para pagina de done recipes,', () => {
+    const { history } = renderWithRouter(<App />);
+    history.push('/foods');
+     userEvent.click(screen.getByRole('button', { name: /done/i }));
+     expect(history.location.pathname).toBe('/done-recipes');
+  });
 });
