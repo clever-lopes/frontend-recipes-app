@@ -1,6 +1,5 @@
 import drinksCategories from './drinksCategories';
 import meals from './mealsMock';
-import mealCategories from './mealCategories';
 import drinks from './drinksMock';
 import beefMeals from './beefMock';
 import chickenMeals from './chickenMock';
@@ -15,6 +14,9 @@ import drinkSemCat from './drinkSemCategory';
 import drinkByLetter from './drinksByLetter';
 import cocktailDrinks from './cocktailMock';
 import cocoaDrinks from './cocoaMock';
+import mealCategories from './mealCategories';
+import MEAL_BY_IGREDIENTE from './mealByIgrediente';
+import drinksByIgredients from './drinksByIgredients';
 
 export default function mockFetch(endpoint) {
   return Promise.resolve({
@@ -62,6 +64,10 @@ export default function mockFetch(endpoint) {
           return Promise.resolve(cocktailDrinks);
           case 'https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Cocoa':
           return Promise.resolve(cocoaDrinks);
+          case 'https://www.themealdb.com/api/json/v1/1/filter.php?i=Chicken':
+            return Promise.resolve(MEAL_BY_IGREDIENTE);
+          case 'https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=Vodka':
+            return Promise.resolve(drinksByIgredients);
         default:
           break;
       }

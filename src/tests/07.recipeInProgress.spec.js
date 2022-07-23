@@ -5,14 +5,12 @@ import App from '../App';
 import renderWithRouter from './helpers/renderWithRouter';
 import mockFetch from './mocks/fecthControl';
 
-const recipesInprogress= {
-  cocktails: {
-
-  },
+const recipesInprogress = {
+  cocktails: {},
   meals: {
-    52977: ["Lentils", "Onion", "Carrots"]
+    52977: ['Lentils', 'Onion', 'Carrots']
   }
-}
+};
 
 const doneRecipes = [
   {
@@ -197,9 +195,9 @@ describe('testando a tela de receitas em progresso', () => {
     expect(notFound).toBeInTheDocument();
   });
 
-  test('testa botão de share na pagina de progresso em comidas', async() => {
-     global.fetch = jest.fn().mockImplementation(mockFetch);
-     document.execCommand = jest.fn().mockResolvedValue();
+  test('testa botão de share na pagina de progresso em comidas', async () => {
+    global.fetch = jest.fn().mockImplementation(mockFetch);
+    document.execCommand = jest.fn().mockResolvedValue();
     const { history } = renderWithRouter(<App />);
     history.push('foods/52977/in-progress');
 
@@ -210,13 +208,13 @@ describe('testando a tela de receitas em progresso', () => {
     expect(shareBtn).toBeInTheDocument();
     userEvent.click(shareBtn);
 
-    await new Promise((res) => setTimeout(res, +'500'));
+    await new Promise(res => setTimeout(res, +'500'));
     expect(document.execCommand).toHaveBeenCalledWith('copy');
   });
 
   test('testa botão de share na pagina de progresso em bebidas', async () => {
     global.fetch = jest.fn().mockImplementation(mockFetch);
-    document.execCommand = jest.fn().mockResolvedValue()
+    document.execCommand = jest.fn().mockResolvedValue();
 
     delete window.location;
     window.location = Object.create(window);
@@ -231,15 +229,14 @@ describe('testando a tela de receitas em progresso', () => {
     expect(screen.getByTestId('recipe-title')).toBeInTheDocument();
     expect(shareBtn).toBeInTheDocument();
     userEvent.click(shareBtn);
-    await new Promise((res) => setTimeout(res, +'500'));
+    await new Promise(res => setTimeout(res, +'500'));
     expect(document.execCommand).toHaveBeenCalledWith('copy');
 
-    const spanCopied = await waitFor(()=> screen.findByText(/link copied!/i));
-    await waitFor(()=>expect(spanCopied).toBeInTheDocument());
+    const spanCopied = await waitFor(() => screen.findByText(/link copied!/i));
+    await waitFor(() => expect(spanCopied).toBeInTheDocument());
 
-
-    await new Promise((res)=> setTimeout(res,3000));
-      expect(spanCopied).not.toBeInTheDocument();
+    await new Promise(res => setTimeout(res, 3000));
+    expect(spanCopied).not.toBeInTheDocument();
   });
 
   test('se clicar no favoritos salva em favoritos, e se clicar novamente remove, para progress de bebidas', async () => {
@@ -315,16 +312,23 @@ describe('testando a tela de receitas em progresso', () => {
     userEvent.click(screen.getByTestId('finish-recipe-btn'));
     expect(history.location.pathname).toBe('/done-recipes');
     expect(JSON.parse(localStorage.getItem('doneRecipes'))).toHaveLength(2);
-    expect(JSON.parse(localStorage.getItem('doneRecipes'))).toEqual(doneRecipes);
+    expect(JSON.parse(localStorage.getItem('doneRecipes'))).toEqual(
+      doneRecipes
+    );
   });
 
-  // test('testa se o local storage armazena corretamente os  steps do progresso de receitas', async()=>{
-  //   localStorage.inProgressRecipes = JSON.stringify(recipesInprogress);
-  //       global.fetch = jest.fn().mockImplementation(mockFetch);
-  //       const { history } = renderWithRouter(<App />);
-  //       history.push('foods/52977/in-progress');
-  //       await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+  test('testa se o local storage armazena corretamente os  steps do progresso de receitas', async () => {
+    localStorage.clear();
+    global.fetch = jest.fn().mockImplementation(mockFetch);
+    const { history } = renderWithRouter(<App />);
+    history.push('foods/52977/in-progress');
+    await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
 
-  //       expect(JSON.parse(localStorage.getItem('inProgressRecipes'))).toEqual(recipesInprogress);
-  // });
+    expect(JSON.parse(localStorage.inProgressRecipes)).toBeTruthy();
+    history.push('/')
+    localStorage.clear();
+    localStorage.inProgressRecipes = JSON.stringify({});
+    history.push('foods/52977/in-progress');
+    expect(JSON.parse(localStorage.inProgressRecipes).meals).toBeTruthy();
+  });
 });

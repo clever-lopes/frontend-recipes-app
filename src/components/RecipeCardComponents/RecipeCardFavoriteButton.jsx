@@ -1,7 +1,7 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
-import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
+// import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import { popUpUpdate } from './RecipeCardShareButton';
 
 const unFavorite = (id, setState, popUp, setPopUp) => {
@@ -26,7 +26,7 @@ export default function RecipeCardFavoriteButton(props) {
     >
       <img
         data-testid={ `${index}-horizontal-favorite-btn` }
-        src={ isFavorite ? blackHeartIcon : whiteHeartIcon }
+        src={ isFavorite && blackHeartIcon }
         alt={ id }
         width="17px"
         value={ id }

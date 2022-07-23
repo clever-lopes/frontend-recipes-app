@@ -166,7 +166,7 @@ describe('teste da pagina de favoritos', () => {
     userEvent.click(screen.getByTestId('0-horizontal-favorite-btn'));
     expect(item1).not.toBeInTheDocument();
   });
-  test('Se clicar na receita é redirecionado para pagina de detalhes', async() => {
+  test('Se clicar na receita pela imagem é redirecionado para pagina de detalhes', async() => {
     localStorage.favoriteRecipes = JSON.stringify([
       {
         alcoholicOrNot: "",
@@ -185,6 +185,30 @@ describe('teste da pagina de favoritos', () => {
     const item1 = screen.getByTestId('0-horizontal-image');
     expect(item1).toBeInTheDocument();
     expect(screen.getByTestId('0-horizontal-favorite-btn').src).toBe('http://localhost/blackHeartIcon.svg')
+    userEvent.click(item1);
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    expect(history.location.pathname).toBe('/foods/52977');
+
+  });
+  test('Se clicar na receita pelo botão é redirecionado para pagina de detalhes', async() => {
+    localStorage.favoriteRecipes = JSON.stringify([
+      {
+        alcoholicOrNot: "",
+        category: "Side",
+        id: "52977",
+        image: "https://www.themealdb.com/images/media/meals/58oia61564916529.jpg",
+        name: "Corba",
+        nationality: "Turkish",
+        type: "food"
+      }
+    ])
+    global.fetch = jest.fn().mockImplementation(mockFetch);
+    const { history } = renderWithRouter(<App />);
+    history.push('/favorite-recipes');
+
+    const item1 = screen.getByTestId('0-horizontal-name');
+    expect(item1).toBeInTheDocument();
     userEvent.click(item1);
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());

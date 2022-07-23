@@ -19,25 +19,19 @@ export const removeItem = (item, type, id) => {
 };
 
 const getProgress = (type, id) => {
-  if (localStorage.inProgressRecipes) {
-    const inProgress = JSON.parse(localStorage.getItem(KEY_NAME));
-    if (inProgress[type]) {
-      if (inProgress[type][id]) {
-        return inProgress[type][id];
-      }
-      localStorage
-        .setItem(KEY_NAME, JSON
-          .stringify({ ...inProgress, [type]: { ...inProgress[type], [id]: [] } }));
-      return [];
+  const inProgress = JSON.parse(localStorage.getItem(KEY_NAME));
+  if (inProgress[type]) {
+    if (inProgress[type][id]) {
+      return inProgress[type][id];
     }
     localStorage
       .setItem(KEY_NAME, JSON
-        .stringify({ ...inProgress, [type]: { [id]: [] } }));
+        .stringify({ ...inProgress, [type]: { ...inProgress[type], [id]: [] } }));
     return [];
   }
   localStorage
     .setItem(KEY_NAME, JSON
-      .stringify({ [type]: { [id]: [] } }));
+      .stringify({ ...inProgress, [type]: { [id]: [] } }));
   return [];
 };
 
