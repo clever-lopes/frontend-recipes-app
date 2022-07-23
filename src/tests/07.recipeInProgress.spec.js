@@ -5,6 +5,14 @@ import App from '../App';
 import renderWithRouter from './helpers/renderWithRouter';
 import mockFetch from './mocks/fecthControl';
 
+const recipesInprogress= {
+  cocktails: {
+
+  },
+  meals: {
+    52977: ["Lentils", "Onion", "Carrots"]
+  }
+}
 
 const doneRecipes = [
   {
@@ -309,4 +317,14 @@ describe('testando a tela de receitas em progresso', () => {
     expect(JSON.parse(localStorage.getItem('doneRecipes'))).toHaveLength(2);
     expect(JSON.parse(localStorage.getItem('doneRecipes'))).toEqual(doneRecipes);
   });
+
+  // test('testa se o local storage armazena corretamente os  steps do progresso de receitas', async()=>{
+  //   localStorage.inProgressRecipes = JSON.stringify(recipesInprogress);
+  //       global.fetch = jest.fn().mockImplementation(mockFetch);
+  //       const { history } = renderWithRouter(<App />);
+  //       history.push('foods/52977/in-progress');
+  //       await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
+
+  //       expect(JSON.parse(localStorage.getItem('inProgressRecipes'))).toEqual(recipesInprogress);
+  // });
 });

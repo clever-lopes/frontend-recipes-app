@@ -6,7 +6,6 @@ import renderWithRouter from './helpers/renderWithRouter';
 import mockFetch from './mocks/fecthControl';
 import favorites from './mocks/favoritesMock';
 import doneRecipes from './mocks/doneRecipesMock';
-import FavoriteRecipes from '../pages/favorite/FavoriteRecipes';
 
 describe('teste da pagina de favoritos', () => {
   test('se contem os botões da pagina e o titulo"', () => {
@@ -141,4 +140,67 @@ describe('teste da pagina de favoritos', () => {
     expect(item3).toBeInTheDocument();
     expect(item3.src).toBe('https://www.thecocktaildb.com/images/media/drink/rtpxqw1468877562.jpg');
   });
+  test('testa se clicar em share o link da receita é copiado', async() => {
+    document.execCommand = jest.fn().mockResolvedValue();
+    const { history } = renderWithRouter(<App />);
+    history.push('/favorite-recipes');
+    userEvent.click(screen.getByTestId('0-horizontal-share-btn'));
+
+    const spanCopied = await waitFor(() => screen.findByText(/link copied!/i));
+    await waitFor(() => expect(spanCopied).toBeInTheDocument());
+
+    await new Promise(res => setTimeout(res, +'500'));
+    expect(document.execCommand).toHaveBeenCalledWith('copy');
+
+
+    await new Promise(res => setTimeout(res, 3000));
+    expect(spanCopied).not.toBeInTheDocument();
+  });
+  test('Se clicar no botão de favorito, ele remove a receita de favoritos', () => {
+    
+    const { history } = renderWithRouter(<App />);
+    history.push('/favorite-recipes');
+    const item1 = screen.getByTestId('0-horizontal-image');
+    expect(item1).toBeInTheDocument();
+
+    userEvent.click(screen.getByTestId('0-horizontal-favorite-btn'));
+    expect(item1).not.toBeInTheDocument();
+  });
+  test('Se clicar na receita é redirecionado para pagina de detalhes', async() => {
+    localStorage.favoriteRecipes = JSON.stringify([
+      {
+        alcoholicOrNot: "",
+        category: "Side",
+        id: "52977",
+        image: "https://www.themealdb.com/images/media/meals/58oia61564916529.jpg",
+        name: "Corba",
+        nationality: "Turkish",
+        type: "food"
+      }
+    ])
+    global.fetch = jest.fn().mockImplementation(mockFetch);
+    const { history } = renderWithRouter(<App />);
+    history.push('/favorite-recipes');
+
+    const item1 = screen.getByTestId('0-horizontal-image');
+    expect(item1).toBeInTheDocument();
+    expect(screen.getByTestId('0-horizontal-favorite-btn').src).toBe('http://localhost/blackHeartIcon.svg')
+    userEvent.click(item1);
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    expect(history.location.pathname).toBe('/foods/52977');
+
+  });
+  // test('testa se clicar no botao de favoritos e ir para detalhes da receita o inone esta co ma cor white', async()=>{
+  //   global.fetch = jest.fn().mockImplementation(mockFetch);
+  //   const { history } = renderWithRouter(<App />);
+  //   history.push('/favorite-recipes');
+  //   const item1 = screen.getByTestId('0-horizontal-image');
+  //   expect(item1).toBeInTheDocument();
+  //   userEvent.click(screen.getByTestId('0-horizontal-favorite-btn'));
+    
+  //   history.push('/foods/52977')
+  //   await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+  //   expect(screen.getByTestId('favorite-btn').src).toBe('http://localhost/whiteHeartIcon.svg')
+  // })
 });

@@ -58,7 +58,7 @@ export default function RecipeCardShareButton(props) {
       </button>
       {
         popUp && (
-          <span>Link copied!</span>
+          <span data-testid="span-shared">Link copied!</span>
         )
       }
     </div>
