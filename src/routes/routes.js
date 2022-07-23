@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Login from '../pages/login/Login';
 import Recipes from '../pages/home/Recipes';
-import Progress from '../pages/progress/Progress';
+import Progress from '../pages/progress/RecipeInProgress';
 import RecipeDetails from '../pages/details/RecipeDetails';
 import Profile from '../pages/profile/Profile';
 import NotFound from '../pages/notFound';
