@@ -6,8 +6,8 @@ import Progress from '../pages/progress/RecipeInProgress';
 import RecipeDetails from '../pages/details/RecipeDetails';
 import Profile from '../pages/profile/Profile';
 import NotFound from '../pages/notFound';
-import FavoriteRecipes from '../pages/favorite/FavoriteRecipes';
 import DoneRecipes from '../pages/DoneRecipes/DoneRecipes';
+import FavoriteRecipes from '../pages/favorite/FavoriteRecipes';
 
 export default function Routes() {
   return (
