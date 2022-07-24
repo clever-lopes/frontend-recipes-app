@@ -40,7 +40,7 @@ export default function IngredientsList(props) {
 }
 
 IngredientsList.propTypes = {
-  ingredients: propTypes.arrayOf(propTypes.object).isRequired,
+  ingredients: propTypes.arrayOf(propTypes.shape({})).isRequired,
   checkList: propTypes.arrayOf(propTypes.string).isRequired,
   checkHandle: propTypes.func.isRequired,
 };
