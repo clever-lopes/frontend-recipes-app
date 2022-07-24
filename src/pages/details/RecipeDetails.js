@@ -7,14 +7,21 @@ import Carousel from './components/Carousel';
 import blackHeartIcon from '../../images/blackHeartIcon.svg';
 import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import shareIcon from '../../images/shareIcon.svg';
+import getFavorites from '../../components/helpers/getFavorites';
+import { addFavorite, removeFavorite } from '../../components/helpers/readsfavorite';
 
 const copy = require('clipboard-copy');
 
 export default function RecipeDetails(props) {
+  if (!localStorage.doneRecipes) localStorage.setItem('doneRecipes', JSON.stringify([]));
+  if (!localStorage.inProgressRecipes) {
+    localStorage.setItem('inProgressRecipes', JSON.stringify({
+      cocktails: {},
+      meals: {},
+    }));
+  }
+
   const [recommendation, setRecommendation] = useState([]);
-  const [recipeState] = useState('Start Recipe');
-  const [heartImg, setHeartImg] = useState(whiteHeartIcon);
-  const [isFinished] = useState(true);
   const [foodObject, setFoodObject] = useState({
     DrinkThumb: '',
     Drink: '',
@@ -22,22 +29,30 @@ export default function RecipeDetails(props) {
     ingredients: [],
     Instructions: '',
   });
-  const { match: { params: { id } } } = props;
-  const { location: { pathname, href } } = useHistory();
+  const [popUp, setPopUp] = useState(false);
+  const { history, match: { params: { id } } } = props;
+  const { location: { pathname } } = useHistory();
   const path = pathname.split('/').filter((item) => item);
   const funcMap = path[0] === 'foods' ? mealAPI : drinkAPI;
   const recommendMap = (path[0] !== 'foods') ? mealAPI : drinkAPI;
+  const [heartImg, setHeartImg] = useState(getFavorites().some((item) => item.id === id));
 
-  useEffect(() => {
-    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
+  const recipeState = () => {
+    const idKeys = Object.values(JSON.parse(localStorage.getItem('inProgressRecipes')));
+    const accKeys = idKeys.reduce((acc, item) => {
+      acc = [...acc, ...Object.keys(item)];
+      return acc;
+    }, []);
+    return accKeys.includes(id);
+  };
 
-    if (favoriteRecipes) {
-      const result = favoriteRecipes.find((recipe) => recipe.id === id);
-      if (result) {
-        setHeartImg(blackHeartIcon);
-      }
-    }
-  }, []);
+  const doneState = () => (
+    !JSON.parse(localStorage.getItem('doneRecipes')).map((item) => item.id).includes(id)
+  );
+
+  // console.log(doneState());
+
+  let timerID;
 
   useEffect(() => {
     const firstCall = async () => {
@@ -50,82 +65,25 @@ export default function RecipeDetails(props) {
     };
     recommend();
     firstCall();
+    clearTimeout(timerID);
   }, []);
 
-  // useEffect(() => {
-  //   const recommend = async () => {
-  //     const result = await funcMap.name('');
-  //     // console.log(result);
-  //     setRecommendation(result);
-  //     // console.log(recommendation);
-  //   };
-  //   recommend();
-  // }, []);
-
-  // useEffect(() => {
-  //   const doneRecipes = localStorage.getItem('doneRecipes');
-
-  //   const inProgressRecipes = localStorage.getItem('inProgressRecipes');
-
-  //   const inProgress = foodObject.some((recipe) => food.Drink === inProgressRecipes || food.Meal === inProgressRecipes);
-
-  //   const result = foodObject.some((food) => food.Drink === doneRecipes || food.Meal === doneRecipes);
-
-  //   setIsFinished(!result);
-  //   if (inProgress) setRecipeState('Continue Recipe'); else setRecipeState('Start Recipe');
-  // }, []);
-
   function onFavoriteBtnClick() {
-    const image = foodObject.MealThumb || foodObject.DrinkThumb;
-    const name = foodObject.Meal || foodObject.Drink;
-    const alcoholicOrNot = foodObject.Alcoholic ? foodObject.Alcoholic : '';
-    const category = foodObject.Category;
-    const nationality = foodObject.Area ? foodObject.Area : '';
-    console.log(foodObject);
-    console.log({ ...foodObject, type: foodObject.Meal ? 'food' : 'drink' });
-    const ObjectWithType = { ...foodObject, type: foodObject.Meal ? 'food' : 'drink' };
-    const { type } = ObjectWithType;
-
-    const favoriteRecipes = JSON.parse(localStorage.getItem('favoriteRecipes'));
-
-    if (favoriteRecipes) {
-      const favoriteRecipesObj = [...favoriteRecipes, {
-        id,
-        type,
-        nationality,
-        category,
-        alcoholicOrNot,
-        name,
-        image,
-      }];
-
-      if (heartImg === whiteHeartIcon) {
-        localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipesObj));
-      }
-
-      if (heartImg === blackHeartIcon) {
-        const newFavoriteRecipes = favoriteRecipesObj
-          .filter((recipe) => recipe.id !== id);
-        localStorage.setItem('favoriteRecipes', JSON.stringify(newFavoriteRecipes));
-      }
+    if (heartImg) {
+      removeFavorite(id);
     } else {
-      const favoriteRecipesObj = [{
-        id, type, nationality, category, alcoholicOrNot, name, image,
-      }];
-
-      localStorage.setItem('favoriteRecipes', JSON.stringify(favoriteRecipesObj));
+      addFavorite(foodObject);
     }
-    setHeartImg(heartImg === whiteHeartIcon ? blackHeartIcon : whiteHeartIcon);
+    setHeartImg(!heartImg);
   }
 
-  function onShareBtnClick() {
-    console.log(href);
-    copy(href);
-    // navigator.clipboard.writeText(location.href);
-    console.log(navigator.clipboard);
-    // copy(`localhost:3000${pathname}`);
-    global.alert('Link copied!');
-  }
+  const shareHandle = async () => {
+    copy(window.location.href);
+    setPopUp(true);
+    setTimeout(() => {
+      setPopUp(false);
+    }, +'2000');
+  };
 
   return (
     <div
@@ -149,7 +107,6 @@ export default function RecipeDetails(props) {
         </h3>
         <button
           type="button"
-          // data-testid="favorite-btn"
           style={ {
             border: 'none',
             background: 'transparent',
@@ -158,22 +115,28 @@ export default function RecipeDetails(props) {
         >
           <img
             data-testid="favorite-btn"
-            src={ heartImg }
+            src={ heartImg ? blackHeartIcon : whiteHeartIcon }
             alt="favorite"
             width="17px"
           />
         </button>
-        <button
-          type="button"
-          // data-testid="share-btn"
-          style={ {
-            border: 'none',
-            background: 'transparent',
-          } }
-          onClick={ onShareBtnClick }
-        >
-          <img data-testid="share-btn" src={ shareIcon } alt="share" width="17px" />
-        </button>
+        <div>
+          <button
+            type="button"
+            style={ {
+              border: 'none',
+              background: 'transparent',
+            } }
+            onClick={ shareHandle }
+          >
+            <img data-testid="share-btn" src={ shareIcon } alt="share" width="17px" />
+          </button>
+          {
+            popUp && (
+              <span>Link copied!</span>
+            )
+          }
+        </div>
         <p
           data-testid="recipe-category"
         >
@@ -186,7 +149,7 @@ export default function RecipeDetails(props) {
                 key={ index }
                 data-testid={ `${index}-ingredient-name-and-measure` }
               >
-                { ` ${item.measure} of ${item.ingredient} ` }
+                { `${item.measure} of ${item.ingredient}` }
               </li>
             ))
           }
@@ -205,7 +168,7 @@ export default function RecipeDetails(props) {
       <Carousel recommendation={ recommendation } />
       <div>
         {
-          isFinished && (
+          doneState() && (
             <button
               type="button"
               data-testid="start-recipe-btn"
@@ -213,8 +176,9 @@ export default function RecipeDetails(props) {
                 position: 'fixed',
                 bottom: '0',
               } }
+              onClick={ () => history.push(`${pathname}/in-progress`) }
             >
-              { recipeState }
+              { recipeState() ? 'Continue Recipe' : 'Start Recipe'}
             </button>)
         }
       </div>
@@ -228,4 +192,7 @@ RecipeDetails.propTypes = {
       id: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
+  history: PropTypes.shape(
+    PropTypes.func.isRequired,
+  ).isRequired,
 };

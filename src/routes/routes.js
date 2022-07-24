@@ -2,10 +2,12 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Login from '../pages/login/Login';
 import Recipes from '../pages/home/Recipes';
-import Progress from '../pages/progress/Progress';
+import Progress from '../pages/progress/RecipeInProgress';
 import RecipeDetails from '../pages/details/RecipeDetails';
 import Profile from '../pages/profile/Profile';
 import NotFound from '../pages/notFound';
+import FavoriteRecipes from '../pages/favorite/FavoriteRecipes';
+import DoneRecipes from '../pages/DoneRecipes/DoneRecipes';
 
 export default function Routes() {
   return (
@@ -17,6 +19,8 @@ export default function Routes() {
       <Route path="/drinks/:id" component={ RecipeDetails } />
       <Route path="/foods" component={ Recipes } />
       <Route path="/drinks" component={ Recipes } />
+      <Route path="/done-recipes" component={ DoneRecipes } />
+      <Route path="/favorite-recipes" component={ FavoriteRecipes } />
       <Route path="/profile" component={ Profile } />
       <Route path="/*" component={ NotFound } />
     </Switch>
