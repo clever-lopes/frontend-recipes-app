@@ -1,13 +1,40 @@
-# :construction: README customizado em construção ! :construction:
-<!-- Olá, Tryber!
-Esse é apenas um arquivo inicial para o README do seu projeto no qual você pode customizar e reutilizar todas as vezes que for executar o trybe-publisher.
+# Recipes App
+[![NPM](https://img.shields.io/npm/l/react)](https://github.com/clever-junior/frontend-recipes-app/blob/main/LICENSE) 
 
-Para deixá-lo com a sua cara, basta alterar o seguinte arquivo da sua máquina: ~/.student-repo-publisher/custom/_NEW_README.md
+# Sobre o projeto
 
-É essencial que você preencha esse documento por conta própria, ok?
-Não deixe de usar nossas dicas de escrita de README de projetos, e deixe sua criatividade brilhar!
-:warning: IMPORTANTE: você precisa deixar nítido:
-- quais arquivos/pastas foram desenvolvidos por você; 
-- quais arquivos/pastas foram desenvolvidos por outra pessoa estudante;
-- quais arquivos/pastas foram desenvolvidos pela Trybe.
--->
+Recipes app é uma aplicação frontend feita em React consumindo 2 APIs externas, uma para bebidas e outra para bebidas. 
+
+Na aplicação é possível: ver, buscar, filtrar, tornar favorito e acompanhar o progresso de preparação de receitas e drinks.
+
+# Tecnologias utilizadas
+
+## Front end
+- HTML / CSS / JS 
+- ReactJS
+
+# Como executar o projeto
+
+## Front end web
+Pré-requisitos: npm / yarn
+
+```bash
+# clonar repositório
+git clone https://github.com/clever-junior/frontend-recipes-app.git
+
+# entrar na pasta do projeto 
+cd https://github.com/clever-junior/frontend-recipes-app.git
+
+# instalar dependências
+yarn install
+
+# executar o projeto
+yarn start
+```
+
+# Autor
+
+Clever Meireles Lopes Junior
+
+https://www.linkedin.com/in/clever-lopes
+
