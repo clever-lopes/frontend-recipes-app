@@ -3,7 +3,7 @@
 
 # Sobre o projeto
 
-Recipes app é uma aplicação frontend feita em React consumindo 2 APIs externas, uma para bebidas e outra para bebidas. 
+Recipes app é uma aplicação frontend feita em React consumindo 1 API externa de bebidas.
 
 Na aplicação é possível: ver, buscar, filtrar, tornar favorito e acompanhar o progresso de preparação de receitas e drinks.
 
