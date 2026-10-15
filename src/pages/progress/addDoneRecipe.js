@@ -14,7 +14,7 @@ const addDoneRecipe = (prodInfo) => {
     alcoholicOrNot: prodInfo.Alcoholic || '',
     name: prodInfo.Meal || prodInfo.Drink,
     image: prodInfo.MealThumb || prodInfo.DrinkThumb,
-    doneDate: `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`,
+    doneDate: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`,
     tags: formatTags(prodInfo.Tags || ''),
   };
   if (localStorage.doneRecipes) {

@@ -13,21 +13,21 @@ Built in 2022 as a group project at [Trybe](https://www.betrybe.com/) by four pe
 - Luciano Dutra Cavalcante de Souza
 - [Clever Lopes](https://github.com/clever-lopes)
 
-My part during the course was small: the initial folder structure, changes to the carousel component, and two pair-programmed commits. In 2026 I fixed the drinks page after TheCocktailDB changed its empty-search response and set up the GitHub Pages deploy.
+My part during the course was small: the initial folder structure, changes to the carousel component, and two pair-programmed commits. In 2026 I maintained it alone: fixed the drinks page after TheCocktailDB changed its empty-search response, set up the GitHub Pages deploy, moved it from Create React App to Vite and React 18, and fixed done recipes being saved with the wrong month.
 
 ## Stack
 
-React 17, React Router 5, Context API, Create React App. Tests with React Testing Library (75 tests).
+React 18, React Router 5, Context API, Vite. Tests with Vitest and React Testing Library (75 tests).
 
 ## Running locally
 
-The project pins Node 16 in `package.json`. It also builds on Node 22 if the engine check is relaxed:
+Needs Node 20 or newer.
 
 ```bash
 git clone https://github.com/clever-lopes/frontend-recipes-app.git
 cd frontend-recipes-app
-npm ci --engine-strict=false
-npm start
+npm ci
+npm run dev
 ```
 
 ```bash
@@ -36,7 +36,7 @@ npm test
 
 ## Deploy
 
-Every push to `main` builds the app and publishes it to GitHub Pages (`.github/workflows/pages.yml`). The build sets `PUBLIC_URL=/frontend-recipes-app` and copies `index.html` to `404.html`, so links straight to a route such as `/foods/52771` still load the app.
+Every push to `main` runs the tests, builds the app and publishes it to GitHub Pages (`.github/workflows/pages.yml`); a failing test stops the deploy. `vite.config.js` sets the `/frontend-recipes-app/` base for builds, and the workflow copies `index.html` to `404.html` so links straight to a route such as `/foods/52771` still load the app.
 
 ## License
 

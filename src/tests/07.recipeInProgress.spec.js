@@ -38,8 +38,17 @@ const doneRecipes = [
   }
 ];
 describe('testando a tela de receitas em progresso', () => {
+  // The done-recipes fixture was recorded on 23/6/2022. Freezing the clock on
+  // that day keeps the comparison valid on any other day, and it caught
+  // doneDate being written with a zero-based month.
+  beforeAll(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2022, 5, 23));
+  });
+  afterAll(() => vi.useRealTimers());
+
   it('verifica elementos de uma receita de comida', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
 
     history.push('foods/52977/in-progress');
@@ -57,7 +66,7 @@ describe('testando a tela de receitas em progresso', () => {
   });
 
   it('verifica elementos de uma receita de bebida', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
 
     history.push('drinks/17222/in-progress');
@@ -75,7 +84,7 @@ describe('testando a tela de receitas em progresso', () => {
   });
 
   test('verifica se ao clicar em um igrediente de alguma comida, ele é marcado', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
 
     history.push('foods/52977/in-progress');
@@ -98,7 +107,7 @@ describe('testando a tela de receitas em progresso', () => {
   });
 
   test('verifica se a lista de igredientes da comida marcada é salva', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
     history.push('foods/52977/in-progress');
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
@@ -117,7 +126,7 @@ describe('testando a tela de receitas em progresso', () => {
   });
 
   test('verifica se clicar novamente no igrediente de comida ele é desmarcado', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
     history.push('foods/52977/in-progress');
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
@@ -130,7 +139,7 @@ describe('testando a tela de receitas em progresso', () => {
   });
 
   test('verifica se ao clicar em um igredientede alguam bebida, ele é marcado', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
 
     history.push('drinks/17222/in-progress');
@@ -151,7 +160,7 @@ describe('testando a tela de receitas em progresso', () => {
   });
 
   test('verifica se a lista de igredientes da bebida marcada é salva', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
     history.push('drinks/17222/in-progress');
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
@@ -169,7 +178,7 @@ describe('testando a tela de receitas em progresso', () => {
     });
   });
   test('verifica se clicar novamente no igrediente de bebida ele é desmarcado', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
     history.push('drinks/17222/in-progress');
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
@@ -181,7 +190,7 @@ describe('testando a tela de receitas em progresso', () => {
     });
   });
   test('se a tela de detalhes for de um produto invalido retorna notFound', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
 
     const { history } = renderWithRouter(<App />);
     history.push('foods/01234/in-progress');
@@ -196,8 +205,8 @@ describe('testando a tela de receitas em progresso', () => {
   });
 
   test('testa botão de share na pagina de progresso em comidas', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
-    document.execCommand = jest.fn().mockResolvedValue();
+    global.fetch = vi.fn().mockImplementation(mockFetch);
+    document.execCommand = vi.fn().mockResolvedValue();
     const { history } = renderWithRouter(<App />);
     history.push('foods/52977/in-progress');
 
@@ -213,8 +222,8 @@ describe('testando a tela de receitas em progresso', () => {
   });
 
   test('testa botão de share na pagina de progresso em bebidas', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
-    document.execCommand = jest.fn().mockResolvedValue();
+    global.fetch = vi.fn().mockImplementation(mockFetch);
+    document.execCommand = vi.fn().mockResolvedValue();
 
     delete window.location;
     window.location = Object.create(window);
@@ -240,7 +249,7 @@ describe('testando a tela de receitas em progresso', () => {
   });
 
   test('se clicar no favoritos salva em favoritos, e se clicar novamente remove, para progress de bebidas', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
     history.push('drinks/127222/in-progress');
 
@@ -260,7 +269,7 @@ describe('testando a tela de receitas em progresso', () => {
     expect(favoriteRecipesUpdated).toHaveLength(0);
   });
   test('se clicar no favoritos salva em favoritos, e se clicar novamente remove,  para progress de comidas', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
     history.push('foods/52977/in-progress');
 
@@ -280,7 +289,7 @@ describe('testando a tela de receitas em progresso', () => {
   });
 
   test('teste se ao clicar em done em bebidas redireciona para "/done-recipe"', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
 
     history.push('drinks/127222/in-progress');
@@ -297,7 +306,7 @@ describe('testando a tela de receitas em progresso', () => {
     expect(JSON.parse(localStorage.getItem('doneRecipes'))).toHaveLength(1);
   });
   test('teste se ao clicar em done  em comidas redireciona para "/done-recipe"', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
 
     history.push('foods/52977/in-progress');
@@ -319,7 +328,7 @@ describe('testando a tela de receitas em progresso', () => {
 
   test('testa se o local storage armazena corretamente os  steps do progresso de receitas', async () => {
     localStorage.clear();
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
     history.push('foods/52977/in-progress');
     await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(1));
