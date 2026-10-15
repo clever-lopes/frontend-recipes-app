@@ -1,40 +1,43 @@
 # Recipes App
-[![NPM](https://img.shields.io/npm/l/react)](https://github.com/clever-junior/frontend-recipes-app/blob/main/LICENSE) 
 
-# Sobre o projeto
+**Live demo:** https://cleverlopes.com/frontend-recipes-app/
 
-Recipes app é uma aplicação frontend feita em React consumindo 1 API externa de bebidas.
+A React app to browse meals and drinks, search them by name, first letter or ingredient, filter by category, save favorites, and follow a recipe step by step until it is done. Recipes come from two public APIs, [TheMealDB](https://www.themealdb.com/) and [TheCocktailDB](https://www.thecocktaildb.com/); favorites and progress are kept in the browser's localStorage.
 
-Na aplicação é possível: ver, buscar, filtrar, tornar favorito e acompanhar o progresso de preparação de receitas e drinks.
+## Team
 
-# Tecnologias utilizadas
+Built in 2022 as a group project at [Trybe](https://www.betrybe.com/) by four people:
 
-## Front end
-- HTML / CSS / JS 
-- ReactJS
+- [Samuelr499](https://github.com/Samuelr499)
+- [Victorpagotto](https://github.com/Victorpagotto)
+- Luciano Dutra Cavalcante de Souza
+- [Clever Lopes](https://github.com/clever-lopes)
 
-# Como executar o projeto
+My part during the course was small: the initial folder structure, changes to the carousel component, and two pair-programmed commits. In 2026 I fixed the drinks page after TheCocktailDB changed its empty-search response and set up the GitHub Pages deploy.
 
-## Front end web
-Pré-requisitos: npm / yarn
+## Stack
+
+React 17, React Router 5, Context API, Create React App. Tests with React Testing Library (75 tests).
+
+## Running locally
+
+The project pins Node 16 in `package.json`. It also builds on Node 22 if the engine check is relaxed:
 
 ```bash
-# clonar repositório
-git clone https://github.com/clever-junior/frontend-recipes-app.git
-
-# entrar na pasta do projeto 
-cd https://github.com/clever-junior/frontend-recipes-app.git
-
-# instalar dependências
-yarn install
-
-# executar o projeto
-yarn start
+git clone https://github.com/clever-lopes/frontend-recipes-app.git
+cd frontend-recipes-app
+npm ci --engine-strict=false
+npm start
 ```
 
-# Autor
+```bash
+npm test
+```
 
-Clever Meireles Lopes Junior
+## Deploy
 
-https://www.linkedin.com/in/clever-lopes
+Every push to `main` builds the app and publishes it to GitHub Pages (`.github/workflows/pages.yml`). The build sets `PUBLIC_URL=/frontend-recipes-app` and copies `index.html` to `404.html`, so links straight to a route such as `/foods/52771` still load the app.
 
+## License
+
+MIT
