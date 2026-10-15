@@ -1,0 +1,55 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # package.json pins engines to Node 16 (the original course setup); the
+      # build works on 22, so the engine check is relaxed here only.
+      - run: npm ci --engine-strict=false
+
+      # The app is served from /frontend-recipes-app/, and the lint rules that
+      # gate local development are not a deploy concern.
+      - run: npm run build
+        env:
+          PUBLIC_URL: /frontend-recipes-app
+          DISABLE_ESLINT_PLUGIN: 'true'
+
+      # GitHub Pages has no SPA rewrites: serving index.html as the 404 page
+      # lets deep links like /meals/52771 load the app and route client-side.
+      - run: cp build/index.html build/404.html
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
