@@ -8,7 +8,8 @@ function formatName(str) {
 }
 
 function mealFormat(mealList) {
-  if (mealList === null) return [];
+  // As APIs devolvem null ou uma string ("no data found") quando não acham nada.
+  if (!Array.isArray(mealList)) return [];
   return mealList.map((meal) => {
     const ingredients = Object.entries(meal)
       .filter((item) => item[0].includes('strIngredient'))

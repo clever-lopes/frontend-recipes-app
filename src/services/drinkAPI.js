@@ -3,8 +3,11 @@
 import mealFormat from './helpers/mealFormat';
 import formatCategory from './helpers/formatCategory';
 
+// A TheCocktailDB parou de listar tudo na busca vazia (responde
+// "no data found"), então a lista inicial usa a busca pela letra "a".
 async function name(word) {
-  return fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${word}`)
+  const query = word ? `s=${word}` : 'f=a';
+  return fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?${query}`)
     .then((res) => res.json())
     .then((res) => mealFormat(res.drinks));
 }

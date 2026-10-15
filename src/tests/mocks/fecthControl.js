@@ -32,7 +32,7 @@ export default function mockFetch(endpoint) {
           return Promise.resolve(beefMeals);
         case 'https://www.themealdb.com/api/json/v1/1/filter.php?c=Chicken':
           return Promise.resolve(chickenMeals);
-        case 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s=':
+        case 'https://www.thecocktaildb.com/api/json/v1/1/search.php?f=a':
           return Promise.resolve(drinks);
         case 'https://www.themealdb.com/api/json/v1/1/search.php?s=Apple':
           return Promise.resolve(withApple);
