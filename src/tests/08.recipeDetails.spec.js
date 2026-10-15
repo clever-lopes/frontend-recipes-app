@@ -28,9 +28,9 @@ const listaDefavoritos = [
 ];
 
 describe('testando a tela de detalhes da receita de', () => {
-  beforeEach(() => (global.fetch = jest.fn().mockImplementation(mockFetch)));
+  beforeEach(() => (global.fetch = vi.fn().mockImplementation(mockFetch)));
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   test('verifica se contem todos os elementos na tela de detalhes de comida', async () => {
     const { history } = renderWithRouter(<App />);
@@ -163,7 +163,7 @@ describe('testando a tela de detalhes da receita de', () => {
 
   test('testa se clicar em share, é copiado o link da receita', async () => {
     const { history } = renderWithRouter(<App />);
-    document.execCommand = jest.fn().mockResolvedValue();
+    document.execCommand = vi.fn().mockResolvedValue();
     history.push('drinks/178319');
     await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
 

@@ -26,7 +26,7 @@ describe('teste da pagina de favoritos', () => {
     expect(screen.getByText(/no favorite recipes\.\.\./i)).toBeInTheDocument();
   });
   test('se adicionar uma receita de comida em favoritos, aparece em favorites', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
     history.push('/foods/52977');
     await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
@@ -36,7 +36,7 @@ describe('teste da pagina de favoritos', () => {
     expect(screen.getByText(/turkish \- side/i)).toBeInTheDocument();
   });
   test('se adicionar uma receita de bebida em favoritos, aparece em favorites', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
     history.push('/drinks/17222');
     await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
@@ -141,7 +141,7 @@ describe('teste da pagina de favoritos', () => {
     expect(item3.src).toBe('https://www.thecocktaildb.com/images/media/drink/rtpxqw1468877562.jpg');
   });
   test('testa se clicar em share o link da receita é copiado', async() => {
-    document.execCommand = jest.fn().mockResolvedValue();
+    document.execCommand = vi.fn().mockResolvedValue();
     const { history } = renderWithRouter(<App />);
     history.push('/favorite-recipes');
     userEvent.click(screen.getByTestId('0-horizontal-share-btn'));
@@ -178,7 +178,7 @@ describe('teste da pagina de favoritos', () => {
         type: "food"
       }
     ])
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
     history.push('/favorite-recipes');
 
@@ -203,7 +203,7 @@ describe('teste da pagina de favoritos', () => {
         type: "food"
       }
     ])
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
     history.push('/favorite-recipes');
 
@@ -216,7 +216,7 @@ describe('teste da pagina de favoritos', () => {
 
   });
   // test('testa se clicar no botao de favoritos e ir para detalhes da receita o inone esta co ma cor white', async()=>{
-  //   global.fetch = jest.fn().mockImplementation(mockFetch);
+  //   global.fetch = vi.fn().mockImplementation(mockFetch);
   //   const { history } = renderWithRouter(<App />);
   //   history.push('/favorite-recipes');
   //   const item1 = screen.getByTestId('0-horizontal-image');

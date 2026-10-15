@@ -31,8 +31,8 @@ describe('teste do componente barra de pesquisa', () => {
     const endpoint =
       'https://www.themealdb.com/api/json/v1/1/search.php?s=soup';
 
-    global.fetch = jest.fn().mockResolvedValue({
-      json: jest.fn().mockResolvedValue(meals)
+    global.fetch = vi.fn().mockResolvedValue({
+      json: vi.fn().mockResolvedValue(meals)
     });
 
     const { history } = renderWithRouter(<App />);
@@ -54,8 +54,8 @@ describe('teste do componente barra de pesquisa', () => {
   test('Se o radio selecionado for First letter, a busca de comida na API é feita corretamente pelo primeira letra', async () => {
     const endpoint = 'https://www.themealdb.com/api/json/v1/1/search.php?f=a';
 
-    global.fetch = jest.fn().mockResolvedValue({
-      json: jest.fn().mockResolvedValue(MEAL_BY_LETTER)
+    global.fetch = vi.fn().mockResolvedValue({
+      json: vi.fn().mockResolvedValue(MEAL_BY_LETTER)
     });
 
     const { history } = renderWithRouter(<App />);
@@ -76,8 +76,8 @@ describe('teste do componente barra de pesquisa', () => {
   });
   test('Se o radio selecionado for First letter, a busca de bebida na API é feita corretamente pelo primeira letra', async () => {
     const endpoint = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?f=a';
-    global.fetch = jest.fn().mockResolvedValue({
-      json: jest.fn().mockResolvedValue(drinkByLetter)
+    global.fetch = vi.fn().mockResolvedValue({
+      json: vi.fn().mockResolvedValue(drinkByLetter)
     });
 
     const { history } = renderWithRouter(<App />);
@@ -99,7 +99,7 @@ describe('teste do componente barra de pesquisa', () => {
   test('Se o radio selecionado for First letter, e nenhum item for encontrado, deve aparecer um alert ', async () => {
     global.fetch.mockImplementation(mockFetch);
 
-    window.alert = jest.fn();
+    window.alert = vi.fn();
     const { history } = renderWithRouter(<App />);
     history.push('/drinks');
 
@@ -119,11 +119,11 @@ describe('teste do componente barra de pesquisa', () => {
   });
 
   test('Se o radio selecionado for First letter e a busca na API for feita com mais de uma letra, deve-se exibir um alert', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      json: jest.fn().mockResolvedValue({ meals: null })
+    global.fetch = vi.fn().mockResolvedValue({
+      json: vi.fn().mockResolvedValue({ meals: null })
     });
 
-    window.alert = jest.fn();
+    window.alert = vi.fn();
     const { history } = renderWithRouter(<App />);
     history.push('/foods');
 
@@ -144,7 +144,7 @@ describe('teste do componente barra de pesquisa', () => {
   test('Em foods se o radio selecionado for Igredientes, a busca na API é feita corretamente pelo igrediente', async () => {
     const endpoint = 'https://www.themealdb.com/api/json/v1/1/filter.php?i=Chicken';
 
-    global.fetch = jest.fn(mockFetch);
+    global.fetch = vi.fn(mockFetch);
 
     const { history } = renderWithRouter(<App />);
     history.push('/foods');
@@ -164,7 +164,7 @@ describe('teste do componente barra de pesquisa', () => {
   test('Em drinks se o radio selecionado for Igredientes, a busca na API é feita corretamente pelo igrediente', async () => {
     const endpoint = 'https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=Vodka';
 
-    global.fetch = jest.fn(mockFetch)
+    global.fetch = vi.fn(mockFetch)
 
     const { history } = renderWithRouter(<App />);
     history.push('/drinks');
@@ -183,11 +183,11 @@ describe('teste do componente barra de pesquisa', () => {
     await waitFor(() => expect(global.fetch).toHaveBeenCalledWith(endpoint));
   });
   test('Se não encontrar nenhuma receita por nome deve-se exibir um alert', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      json: jest.fn().mockResolvedValue({ meals: null })
+    global.fetch = vi.fn().mockResolvedValue({
+      json: vi.fn().mockResolvedValue({ meals: null })
     });
 
-    window.alert = jest.fn();
+    window.alert = vi.fn();
     const { history } = renderWithRouter(<App />);
     history.push('/foods');
 
@@ -205,11 +205,11 @@ describe('teste do componente barra de pesquisa', () => {
     await waitFor(() => expect(window.alert).toBeCalled());
   });
   test('Se não encontrar nenhuma receita por ingrediente deve-se exibir um alert', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      json: jest.fn().mockResolvedValue({ meals: null })
+    global.fetch = vi.fn().mockResolvedValue({
+      json: vi.fn().mockResolvedValue({ meals: null })
     });
 
-    window.alert = jest.fn();
+    window.alert = vi.fn();
     const { history } = renderWithRouter(<App />);
     history.push('/foods');
 
@@ -227,7 +227,7 @@ describe('teste do componente barra de pesquisa', () => {
     await waitFor(() => expect(window.alert).toBeCalled());
   });
   test('Se apesquisar uma comida por nome e retornar só uma receita, redireciona para "/foods/{id}" ', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     const { history } = renderWithRouter(<App />);
     history.push('/foods');
 
@@ -245,7 +245,7 @@ describe('teste do componente barra de pesquisa', () => {
     await waitFor(() => expect(history.location.pathname).toBe('/foods/52977'));
   });
   test('Se apesquisa por uma bebida por nome retornar só uma receita redireciona para "/drinks/{id}" ', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
 
     const { history } = renderWithRouter(<App />);
     history.push('/drinks');

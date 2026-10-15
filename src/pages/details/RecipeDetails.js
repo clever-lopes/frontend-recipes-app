@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import copy from 'clipboard-copy';
 import mealAPI from '../../services/mealAPI';
 import drinkAPI from '../../services/drinkAPI';
 import Carousel from './components/Carousel';
@@ -9,8 +10,6 @@ import whiteHeartIcon from '../../images/whiteHeartIcon.svg';
 import shareIcon from '../../images/shareIcon.svg';
 import getFavorites from '../../components/helpers/getFavorites';
 import { addFavorite, removeFavorite } from '../../components/helpers/readsfavorite';
-
-const copy = require('clipboard-copy');
 
 export default function RecipeDetails(props) {
   if (!localStorage.doneRecipes) localStorage.setItem('doneRecipes', JSON.stringify([]));

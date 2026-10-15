@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import copy from 'clipboard-copy';
 import mealAPI from '../../services/mealAPI';
 import drinkAPI from '../../services/drinkAPI';
 import NotFound from '../notFound';
@@ -13,8 +14,6 @@ import './CSS/Progress.css';
 import IngredientsList from './IngredientsList';
 import addDoneRecipe from './addDoneRecipe';
 import unDoneRecipe from './unDoneRecipe';
-
-const copy = require('clipboard-copy');
 
 export default function Progress() {
   if (!localStorage.inProgressRecipes) {

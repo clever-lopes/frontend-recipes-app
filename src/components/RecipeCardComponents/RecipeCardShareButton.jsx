@@ -1,9 +1,8 @@
 import React from 'react';
 import propTypes from 'prop-types';
+import copy from 'clipboard-copy';
 import shareIcon from '../../images/shareIcon.svg';
 import getFavorites from '../helpers/getFavorites';
-
-const copy = require('clipboard-copy');
 
 export const setPopUpInit = () => {
   const favList = getFavorites();

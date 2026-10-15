@@ -17,11 +17,11 @@ import cocoaDrinks from './mocks/cocoaMock';
 
 
 describe('teste da pagina recipes', () => {
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   test('se renderiza as 5 primeiras categorias de comidas', async () => {
     const { history } = renderWithRouter(<App />);
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     history.push('/foods');
     await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
     await waitFor(() => expect(screen.getByTestId('Beef-category-filter')).toBeInTheDocument());
@@ -35,7 +35,7 @@ describe('teste da pagina recipes', () => {
   });
   test('se renderiza as 5 primeiras categorias de bebidas', async () => {
     const { history } = renderWithRouter(<App />);
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
     history.push('/drinks');
     await waitFor(() => expect(global.fetch).toHaveBeenCalledTimes(2));
     await waitFor(() =>
@@ -50,7 +50,7 @@ describe('teste da pagina recipes', () => {
     expect(screen.getByTestId('All-category-filter')).toBeInTheDocument();
   });
   test('Em foods se selecionar as categorias traz as receitas da categoria, e se clicar novamente ou se clicar no All, traz as receitas sem filtro por categoria ', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
 
     const { history } = renderWithRouter(<App />);
     history.push('/foods');
@@ -101,7 +101,7 @@ describe('teste da pagina recipes', () => {
   });
 
   test('se é renderizado menos de 12 items', async () => {
-    global.fetch = jest.fn().mockImplementation(mockSmallFetch);
+    global.fetch = vi.fn().mockImplementation(mockSmallFetch);
 
     const { history } = renderWithRouter(<App />);
     history.push('/foods');
@@ -129,7 +129,7 @@ describe('teste da pagina recipes', () => {
     });
   });
   test('Redirecione a pessoa usuária ao clicar no card para a tela de detalhes para comida', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
 
     const { history } = renderWithRouter(<App />);
     history.push('/foods');
@@ -142,7 +142,7 @@ describe('teste da pagina recipes', () => {
     expect(history.location.pathname).toBe('/foods/52973');
   });
   test('Redirecione a pessoa usuária ao clicar no card para a tela de detalhes para bebida', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
 
     const { history } = renderWithRouter(<App />);
     history.push('/drinks');
@@ -155,7 +155,7 @@ describe('teste da pagina recipes', () => {
     expect(history.location.pathname).toBe('/drinks/17222');
   });
   test('Em drinks se selecionar as categorias traz as receitas da categoria, e se clicar novamente ou se clicar no All, traz as receitas sem filtro por categoria ', async () => {
-    global.fetch = jest.fn().mockImplementation(mockFetch);
+    global.fetch = vi.fn().mockImplementation(mockFetch);
 
     const { history } = renderWithRouter(<App />);
     history.push('/drinks');
